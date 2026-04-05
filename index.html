@@ -74,7 +74,17 @@
             width: 100vw;
             position: relative;
         }
-    </style>
+        #left-column .card.mb-3,
+        #left-column-2 .card.mb-3,
+        #right-column .card.mb-3,
+        #right-column-2 .card.mb-3 {
+            margin-bottom: 0.5rem !important;
+        }
+        #middle-column .card.mb-3 {
+            margin-bottom: 0rem !important;
+            border:none !important;
+        }
+</style>
 </head>
 <body class="no-select" data-bind="class: 'no-select ' + Settings.getSetting('theme').observableValue() + ' ' + Settings.getSetting('backgroundImage').observableValue(), attr : {'oncontextmenu' : 'return !' + Settings.getSetting('disableRightClickMenu').observableValue().toString() + ';'}">
 <!-- imported from src/components/dynamicBackground.html -->
@@ -1519,10 +1529,25 @@ selectAllClick - (Optional) Function called when the Select All button is clicke
 
                     <!-- pokeball selector -->
                     <!-- imported from src/components/pokeballSelector.html -->
+<style>
+#pokeballSelector button[aria-expanded="false"] .when-expanded { display: none; }
+#pokeballSelector button[aria-expanded="true"] .when-collapsed { display: none; }
+#pokeballSelector button[aria-expanded="true"] { background-color: #dc3545 !important; border-color: #dc3545 !important; }
+    .when-collapsed, .when-expanded { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; }
+</style>
+
 <div id="pokeballSelector" class="card sortable border-secondary mb-3" data-bind="visible: player.regionStarters[GameConstants.Region.kanto]() != GameConstants.Starter.None">
     <div class="card-header p-0" data-toggle="collapse" href="#pokeballSelectorBody">
-        <span>Poké Balls</span>
+        <span>Filters</span>
     </div>
+    <!-- ko if: App.game.pokeballFilters.displayList().length > 8 -->
+    <button type="button" class="btn btn-primary"
+            style="position: absolute; left: 0px; top: 0px; width: auto; height: 41px"
+            data-toggle="collapse" data-target="#pokeballFiltersFirst" aria-expanded="false">
+        <span class="when-collapsed">Show All</span>
+        <span class="when-expanded">Hide Top</span>
+    </button>
+    <!-- /ko -->
     <!-- ko if: QuestLineHelper.isQuestLineCompleted('Tutorial Quests') -->
     <img class="clickable" src="assets/images/fa-cog.svg"
         style="position: absolute; right: 20px; top: 0px; width: auto; height: 41px; padding: 8px; padding-right: 4px;"
@@ -1546,7 +1571,8 @@ selectAllClick - (Optional) Function called when the Select All button is clicke
                             <th>Qty</th>
                         </tr>
                     </thead>
-                    <tbody id="pokeballFilters" data-bind="foreach: App.game.pokeballFilters.displayList">
+                    <tbody id="pokeballFiltersFirst" class="collapse">
+                        <!-- ko foreach: App.game.pokeballFilters.displayList().slice(0, 8) -->
                         <tr data-bind="css: { 'pokeballFilterDisabled': !$data.enabled() }, attr: { 'data-name': $data.name }, event: { contextmenu: () => $data.enabled(!$data.enabled()) }">
                             <td><span data-bind="
                                 text: $data.name,
@@ -1585,6 +1611,49 @@ selectAllClick - (Optional) Function called when the Select All button is clicke
                                 "></span>
                             </td>
                         </tr>
+                        <!-- /ko -->
+                    </tbody>
+                    <tbody>
+                        <!-- ko foreach: App.game.pokeballFilters.displayList().slice(8) -->
+                        <tr data-bind="css: { 'pokeballFilterDisabled': !$data.enabled() }, attr: { 'data-name': $data.name }, event: { contextmenu: () => $data.enabled(!$data.enabled()) }">
+                            <td><span data-bind="
+                                text: $data.name,
+                                tooltip: {
+                                    title: $data.description,
+                                    trigger: 'hover',
+                                    boundary: 'window',
+                                    animation: false,
+                                    html: true,
+                                }
+                            "></td>
+                            <td>
+                                <img class="pokeball-small clickable"
+                                    data-bind="
+                                        attr: {src: 'assets/images/pokeball/' + GameConstants.Pokeball[$data.ball()] + '.svg'},
+                                        css: { 'pokeball-selected': $data.enabled() },
+                                        tooltip: {
+                                            title: $data.ball() === GameConstants.Pokeball.None ? 'None' : ItemList[GameConstants.Pokeball[$data.ball()]].displayName,
+                                            trigger: 'hover', animation: false,
+                                            placement: 'right'
+                                        },
+                                        click: function() {App.game.pokeballs.selectedSelection($data.ball); App.game.pokeballs.selectedTitle($data.name); $('#pokeballSelectorModal').modal('show')}
+                                    "
+                                />
+                            </td>
+                            <td data-bind="with: {
+                                count: App.game.pokeballs.getBallQuantity($data?.ball())
+                            }">
+                                <span data-bind="
+                                    text: count ? GameConstants.formatNumber(count) : '-',
+                                    tooltip: count && {
+                                        title: count.toLocaleString('en-US'),
+                                        trigger: 'hover',
+                                        animation: false
+                                    }
+                                "></span>
+                            </td>
+                        </tr>
+                        <!-- /ko -->
                     </tbody>
                 </table>
             </div>
@@ -1639,6 +1708,29 @@ selectAllClick - (Optional) Function called when the Select All button is clicke
   <div data-bind="hidden: Settings.getSetting('hideChallengeRelatedModules').observableValue() && App.game.challenges.list.disableBattleItems.active()">
     <div class="card-header p-0" data-toggle="collapse" href="#battleItemContainerBody">
       <span>Battle Items</span>
+    </div>
+    <div style="position: absolute; left: 0px; top: 0px; height: 41px; display: flex;">
+        <button type="button" class="btn btn-sm btn-primary"
+            style="width: auto; height: 41px;"
+            onclick="App.game.gems.openGemModal()"
+            title="Controls"
+            data-toggle="popover"
+            data-html="true"
+            data-content="Click to see your total gems<br/>Click on flutes to toggle effects"
+            data-placement="left"
+            data-trigger="hover">
+        <img src="assets/images/keyitems/Gem_case.png">
+        </button>
+        <button type="button" class="btn"
+            style="width: auto; height: 41px; padding: 4px;"
+            data-bind="visible: FluteEffectRunner.additionalInfoTooltip().length !== 0,
+            tooltip: {
+                title: FluteEffectRunner.additionalInfoTooltip(),
+                trigger: 'hover',
+                placement:'left',
+                html: true,
+            }">ⓘ
+        </button>
     </div>
     <button type="button" class="btn btn-sm btn-primary"
             style="position: absolute; right: 0px; top: 0px; width: auto; height: 41px;"
@@ -1705,30 +1797,6 @@ selectAllClick - (Optional) Function called when the Select All button is clicke
   </div>
 
   <div class="position-relative" data-bind="visible: App.game.badgeCase.hasBadge(BadgeEnums.Heat)">
-    <div class="card-header p-0 position-relative" data-toggle="collapse" href="#fluteItemContainerBody">
-      <span>Flutes</span>
-      <button type="button" class="btn"
-        style="position: absolute; left: 0px; top: 0px; width: auto; height: 41px; padding: 4px;"
-        data-bind="visible: FluteEffectRunner.additionalInfoTooltip().length !== 0,
-        tooltip: {
-            title: FluteEffectRunner.additionalInfoTooltip(),
-            trigger: 'hover',
-            placement:'left',
-            html: true,
-          }">ⓘ
-    </button>
-    </div>
-      <button type="button" class="btn btn-sm btn-primary"
-          style="position: absolute; right: 0px; top: 0px; width: auto; height: 41px;"
-          onclick="App.game.gems.openGemModal()"
-          title="Controls"
-          data-toggle="popover"
-          data-html="true"
-          data-content="Click to see your total gems<br/>Click on flutes to toggle effects"
-          data-placement="right"
-          data-trigger="hover">
-      <img src="assets/images/keyitems/Gem_case.png">
-    </button>
     <div id="fluteItemContainerBody" class="card-body p-0 show">
       <!-- Flutes -->
       <table class="table table-bordered m-0">
@@ -56523,7 +56591,7 @@ selectAllClick - (Optional) Function called when the Select All button is clicke
           <tr>
         </thead>
         -->
-        <tbody data-bind="foreach: App.game.oakItems.chunkedList(4)">
+        <tbody data-bind="foreach: App.game.oakItems.chunkedList(6, false)">
             <tr data-bind="foreach: $data">
                 <td class="p-0">
                     <button class="p-0 btn d-block w-100"
@@ -56719,7 +56787,7 @@ selectAllClick - (Optional) Function called when the Select All button is clicke
     </div>
     <div id='eggList' class="card-body p-0 show">
       <div class="row m-0" data-bind="foreach: App.game.breeding.eggList">
-        <div class="col-3 col-md-6 p-0 eggSlot">
+        <div class="col-3 col-md-3 p-0 eggSlot">
           <div class="content" data-bind="if: DisplayObservables.collapseState.eggList !== 'hidden'">
             <div data-bind="if: $index() === App.game.breeding.eggSlots">
                 <p>
@@ -56747,10 +56815,11 @@ selectAllClick - (Optional) Function called when the Select All button is clicke
             <div style="margin-top: 20px;" class="clickable" data-bind="
                 click: function(){ if (progress() >= 100) App.game.breeding.hatchPokemonEgg($index()) },
                 tooltip: {
-                    title: BreedingController.getEggPokemonName($data) ? PokemonHelper.displayName(BreedingController.getEggPokemonName($data))() : '???',
+                    title: '<strong>' + (BreedingController.getEggPokemonName($data) ? PokemonHelper.displayName(BreedingController.getEggPokemonName($data))() : '???') + '</strong>' + '<br/>' + $data.progressText(),
                     trigger: 'hover',
                     placement: 'bottom',
                     class: 'no-click',
+                    html: true
                 }">
                 <div data-bind="template: { name: 'eggSVGTemplate', data: $data}, class: BreedingController.getEggCssClass($data)">
                 </div>
@@ -57305,10 +57374,10 @@ selectAllClick - (Optional) Function called when the Select All button is clicke
     </div>
     <button class="btn btn-sm btn-primary" style="position: absolute; right: 0px; top: 0px; width: auto; height: 41px;"
             data-bind="click: function(){ $('#logBookModal').modal('show') }">
-        Full
+        Open
     </button>
     <div id="logBookDisplayBody" class="card-body p-0 show">
-        <div style="resize: vertical; overflow: auto; min-height: 60px; max-height: 400px; height: 200px;">
+        <div style="resize: vertical; overflow: auto; min-height: 60px; height: 540px;">
             <table class="table table-sm m-0" style="table-layout: fixed;">
                 <colgroup>
                     <col style="width: 58px;">
