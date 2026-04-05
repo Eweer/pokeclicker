@@ -1,7 +1,22 @@
+<style>
+#pokeballSelector button[aria-expanded="false"] .when-expanded { display: none; }
+#pokeballSelector button[aria-expanded="true"] .when-collapsed { display: none; }
+#pokeballSelector button[aria-expanded="true"] { background-color: #dc3545 !important; border-color: #dc3545 !important; }
+    .when-collapsed, .when-expanded { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; }
+</style>
+
 <div id="pokeballSelector" class="card sortable border-secondary mb-3" data-bind="visible: player.regionStarters[GameConstants.Region.kanto]() != GameConstants.Starter.None">
     <div class="card-header p-0" data-toggle="collapse" href="#pokeballSelectorBody">
-        <span>Poké Balls</span>
+        <span>Filters</span>
     </div>
+    <!-- ko if: App.game.pokeballFilters.displayList().length > 8 -->
+    <button type="button" class="btn btn-primary"
+            style="position: absolute; left: 0px; top: 0px; width: auto; height: 41px"
+            data-toggle="collapse" data-target="#pokeballFiltersFirst" aria-expanded="false">
+        <span class="when-collapsed">Show All</span>
+        <span class="when-expanded">Hide Top</span>
+    </button>
+    <!-- /ko -->
     <!-- ko if: QuestLineHelper.isQuestLineCompleted('Tutorial Quests') -->
     <img class="clickable" src="assets/images/fa-cog.svg"
         style="position: absolute; right: 20px; top: 0px; width: auto; height: 41px; padding: 8px; padding-right: 4px;"
@@ -25,7 +40,8 @@
                             <th>Qty</th>
                         </tr>
                     </thead>
-                    <tbody id="pokeballFilters" data-bind="foreach: App.game.pokeballFilters.displayList">
+                    <tbody id="pokeballFiltersFirst" class="collapse">
+                        <!-- ko foreach: App.game.pokeballFilters.displayList().slice(0, 8) -->
                         <tr data-bind="css: { 'pokeballFilterDisabled': !$data.enabled() }, attr: { 'data-name': $data.name }, event: { contextmenu: () => $data.enabled(!$data.enabled()) }">
                             <td><span data-bind="
                                 text: $data.name,
@@ -64,6 +80,49 @@
                                 "></span>
                             </td>
                         </tr>
+                        <!-- /ko -->
+                    </tbody>
+                    <tbody>
+                        <!-- ko foreach: App.game.pokeballFilters.displayList().slice(8) -->
+                        <tr data-bind="css: { 'pokeballFilterDisabled': !$data.enabled() }, attr: { 'data-name': $data.name }, event: { contextmenu: () => $data.enabled(!$data.enabled()) }">
+                            <td><span data-bind="
+                                text: $data.name,
+                                tooltip: {
+                                    title: $data.description,
+                                    trigger: 'hover',
+                                    boundary: 'window',
+                                    animation: false,
+                                    html: true,
+                                }
+                            "></td>
+                            <td>
+                                <img class="pokeball-small clickable"
+                                    data-bind="
+                                        attr: {src: 'assets/images/pokeball/' + GameConstants.Pokeball[$data.ball()] + '.svg'},
+                                        css: { 'pokeball-selected': $data.enabled() },
+                                        tooltip: {
+                                            title: $data.ball() === GameConstants.Pokeball.None ? 'None' : ItemList[GameConstants.Pokeball[$data.ball()]].displayName,
+                                            trigger: 'hover', animation: false,
+                                            placement: 'right'
+                                        },
+                                        click: function() {App.game.pokeballs.selectedSelection($data.ball); App.game.pokeballs.selectedTitle($data.name); $('#pokeballSelectorModal').modal('show')}
+                                    "
+                                />
+                            </td>
+                            <td data-bind="with: {
+                                count: App.game.pokeballs.getBallQuantity($data?.ball())
+                            }">
+                                <span data-bind="
+                                    text: count ? GameConstants.formatNumber(count) : '-',
+                                    tooltip: count && {
+                                        title: count.toLocaleString('en-US'),
+                                        trigger: 'hover',
+                                        animation: false
+                                    }
+                                "></span>
+                            </td>
+                        </tr>
+                        <!-- /ko -->
                     </tbody>
                 </table>
             </div>

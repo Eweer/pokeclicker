@@ -26,9 +26,14 @@ export default class OakItems implements Feature {
         this.maxLevelOakItems = ko.observable(0);
     }
 
-    chunkedList(size: number) {
+    chunkedList(size: number, defaultOrder: boolean = true) {
         const result = [];
-        const items = this.itemList;
+        const items = defaultOrder
+            ? this.itemList
+            : Array.from(
+                { length: 4 },
+                (_, col) => this.itemList.filter((__, i) => i % 4 === col),
+            ).flat().sort((a, b) => { if (!a.isModuleUpgrade && b.isModuleUpgrade) return -1; return 1; });
         for (let i = 0; i < items.length; i += size) {
             result.push(items.slice(i, i + size));
         }

@@ -3,6 +3,29 @@
     <div class="card-header p-0" data-toggle="collapse" href="#battleItemContainerBody">
       <span>Battle Items</span>
     </div>
+    <div style="position: absolute; left: 0px; top: 0px; height: 41px; display: flex;">
+        <button type="button" class="btn btn-sm btn-primary"
+            style="width: auto; height: 41px;"
+            onclick="App.game.gems.openGemModal()"
+            title="Controls"
+            data-toggle="popover"
+            data-html="true"
+            data-content="Click to see your total gems<br/>Click on flutes to toggle effects"
+            data-placement="left"
+            data-trigger="hover">
+        <img src="assets/images/keyitems/Gem_case.png">
+        </button>
+        <button type="button" class="btn"
+            style="width: auto; height: 41px; padding: 4px;"
+            data-bind="visible: FluteEffectRunner.additionalInfoTooltip().length !== 0,
+            tooltip: {
+                title: FluteEffectRunner.additionalInfoTooltip(),
+                trigger: 'hover',
+                placement:'left',
+                html: true,
+            }">ⓘ
+        </button>
+    </div>
     <button type="button" class="btn btn-sm btn-primary"
             style="position: absolute; right: 0px; top: 0px; width: auto; height: 41px;"
             data-bind="click: ItemHandler.useAllBattleItems(), disable: !ItemHandler.hasAny()">Use All
@@ -68,30 +91,6 @@
   </div>
 
   <div class="position-relative" data-bind="visible: App.game.badgeCase.hasBadge(BadgeEnums.Heat)">
-    <div class="card-header p-0 position-relative" data-toggle="collapse" href="#fluteItemContainerBody">
-      <span>Flutes</span>
-      <button type="button" class="btn"
-        style="position: absolute; left: 0px; top: 0px; width: auto; height: 41px; padding: 4px;"
-        data-bind="visible: FluteEffectRunner.additionalInfoTooltip().length !== 0,
-        tooltip: {
-            title: FluteEffectRunner.additionalInfoTooltip(),
-            trigger: 'hover',
-            placement:'left',
-            html: true,
-          }">ⓘ
-    </button>
-    </div>
-      <button type="button" class="btn btn-sm btn-primary"
-          style="position: absolute; right: 0px; top: 0px; width: auto; height: 41px;"
-          onclick="App.game.gems.openGemModal()"
-          title="Controls"
-          data-toggle="popover"
-          data-html="true"
-          data-content="Click to see your total gems<br/>Click on flutes to toggle effects"
-          data-placement="right"
-          data-trigger="hover">
-      <img src="assets/images/keyitems/Gem_case.png">
-    </button>
     <div id="fluteItemContainerBody" class="card-body p-0 show">
       <!-- Flutes -->
       <table class="table table-bordered m-0">
