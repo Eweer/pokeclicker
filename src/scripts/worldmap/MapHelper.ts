@@ -19,6 +19,8 @@ class MapHelper {
             genNewEnemy = true;
         }
         if (this.accessToRoute(route, region)) {
+            Battle.resumeAutoClick();
+            GymBattle.pauseAutoClick();
             if (player.region != region) {
                 player.region = region;
             }
@@ -89,7 +91,7 @@ class MapHelper {
                     envs.push('TrashCloak');
                     break;
             }
-            // if not in Hisui, add general envs for Burmy
+        // if not in Hisui, add general envs for Burmy
         } else if (envs.includes('Cave')) {
             envs.push('SandyCloak');
         } else if (typeof area === 'string' && ['City', 'League', 'Tower'].some(word => area.includes(word))) {
@@ -255,6 +257,8 @@ class MapHelper {
             player.route = 0;
             Battle.route = 0;
             Battle.catching(false);
+            Battle.pauseAutoClick();
+            GymBattle.resumeAutoClick();
             const town = TownList[townName];
             player.region = town.region;
             player.subregion = town.subRegion;

@@ -188,7 +188,6 @@ class QuestLine {
         if (this.curQuestObject() instanceof MultipleQuestsQuest) {
             json.initial = this.curQuestObject().quests.map((q) => q.isCompleted() ? true : q.initial());
         }
-
         return json;
     }
 }

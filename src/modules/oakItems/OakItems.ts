@@ -26,6 +26,15 @@ export default class OakItems implements Feature {
         this.maxLevelOakItems = ko.observable(0);
     }
 
+    chunkedList(size: number) {
+        const result = [];
+        const items = this.itemList;
+        for (let i = 0; i < items.length; i += size) {
+            result.push(items.slice(i, i + size));
+        }
+        return result;
+    }
+
     // eslint-disable-next-line class-methods-use-this
     canAccess(): boolean {
         return App.game.party.caughtPokemon.length >= 20;
@@ -35,28 +44,30 @@ export default class OakItems implements Feature {
         this.itemList = [
             new OakItem(OakItemType.Magic_Ball, 'Magic Ball', 'Gives a bonus to your catchrate',
                 true, [5, 6, 7, 8, 9, 10], 0, 20, 2, undefined, undefined, undefined, '%'),
-            new OakItem(OakItemType.Amulet_Coin, 'Amulet Coin', 'Gain more Pokédollars from battling',
-                true, [1.25, 1.30, 1.35, 1.40, 1.45, 1.50], 1, 30, 1),
+            new OakItem(OakItemType.Sprayduck, 'Sprayduck', 'Makes your berries grow faster',
+                false, [1.25, 1.30, 1.35, 1.40, 1.45, 1.50], 1, 60, 1, undefined, undefined, undefined, undefined, true),
             new OakItem(OakItemType.Rocky_Helmet, 'Rocky Helmet', 'Clicks do more damage',
                 true, [1.25, 1.30, 1.35, 1.40, 1.45, 1.50], 1, 40, 3),
-            new OakItem(OakItemType.Exp_Share, 'EXP Share', 'Gain more exp from battling',
-                true, [1.15, 1.18, 1.21, 1.24, 1.27, 1.30], 1, 50, 1),
-            new OakItem(OakItemType.Sprayduck, 'Sprayduck', 'Makes your berries grow faster',
-                false, [1.25, 1.30, 1.35, 1.40, 1.45, 1.50], 1, 60, 1),
-            new OakItem(OakItemType.Shiny_Charm, 'Shiny Charm', 'Encounter shinies more often',
-                true, [1.50, 1.60, 1.70, 1.80, 1.90, 2.00], 1, 70, 150),
+            new OakItem(OakItemType.Cell_Battery, 'Cell Battery', 'Reduce the charges needed to discharge',
+                false, [-5, -10, -15, -20, -25, -30], 0, 90, 1, [5, 10, 30, 60, 150], undefined, undefined, ' Charges', true),
+
+            new OakItem(OakItemType.Amulet_Coin, 'Amulet Coin', 'Gain more Pokédollars from battling',
+                true, [1.25, 1.30, 1.35, 1.40, 1.45, 1.50], 1, 30, 1),
+            new BoughtOakItem(OakItemType.Sprinklotad, 'Sprinklotad', 'Increases the duration of Mulch', 'Hoenn Berry Master',
+                true, [1.25, 1.40, 1.55, 1.70, 1.85, 2.00], 1, 1, undefined, undefined, AmountFactory.createArray([2000, 5000, 10000, 20000, 50000], Currency.farmPoint), undefined, true),
             new OakItem(OakItemType.Magma_Stone, 'Magma Stone', 'Hatch eggs faster',
                 false, [1.50, 1.60, 1.70, 1.80, 1.90, 2.00], 1, 80, 10),
-            new OakItem(OakItemType.Cell_Battery, 'Cell Battery', 'Increase the rate of charging the battery',
-                false, [1.50, 1.60, 1.70, 1.80, 1.90, 2.00], 1, 90, 1, [5, 10, 30, 60, 150]),
-            new BoughtOakItem(OakItemType.Squirtbottle, 'Squirtbottle', 'Increases the chance of berry mutations', 'Johto Berry Master',
-                true, [1.25, 1.5, 1.75, 2, 2.25, 2.5], 1, 10, undefined, undefined, AmountFactory.createArray([2000, 5000, 10000, 20000, 50000], Currency.farmPoint)),
-            new BoughtOakItem(OakItemType.Sprinklotad, 'Sprinklotad', 'Increases the duration of Mulch', 'Hoenn Berry Master',
-                true, [1.25, 1.40, 1.55, 1.70, 1.85, 2.00], 1, 1, undefined, undefined, AmountFactory.createArray([2000, 5000, 10000, 20000, 50000], Currency.farmPoint)),
             new BoughtOakItem(OakItemType.Explosive_Charge, 'Explosive Charge', 'Increases the number of tiles the Bomb tool can target', 'Cinnabar Island Shop',
-                true, [1, 2, 3, 6, 8, 10], 1, 50, undefined, undefined, AmountFactory.createArray([50000, 100000, 400000, 1000000, 2000000], Currency.money), ''),
+                true, [1, 2, 3, 6, 8, 10], 1, 50, undefined, undefined, AmountFactory.createArray([50000, 100000, 400000, 1000000, 2000000], Currency.money), '', true),
+
+            new OakItem(OakItemType.Shiny_Charm, 'Shiny Charm', 'Encounter shinies more often',
+                true, [1.50, 1.60, 1.70, 1.80, 1.90, 2.00], 1, 70, 150),
+            new BoughtOakItem(OakItemType.Squirtbottle, 'Squirtbottle', 'Increases the chance of berry mutations', 'Johto Berry Master',
+                true, [1.25, 1.5, 1.75, 2, 2.25, 2.5], 1, 10, undefined, undefined, AmountFactory.createArray([2000, 5000, 10000, 20000, 50000], Currency.farmPoint), 'x', true),
+            new OakItem(OakItemType.Exp_Share, 'EXP Share', 'Gain more exp from battling',
+                true, [1.15, 1.18, 1.21, 1.24, 1.27, 1.30], 1, 50, 1),
             new BoughtOakItem(OakItemType.Treasure_Scanner, 'Treasure Scanner', 'Chance to multiply mining rewards', 'Cinnabar Island Shop',
-                true, [4, 8, 12, 16, 20, 24], 1, 25, undefined, undefined, AmountFactory.createArray([50000, 100000, 250000, 500000, 1000000], Currency.money), '%'),
+                true, [4, 8, 12, 16, 20, 24], 1, 25, undefined, undefined, AmountFactory.createArray([50000, 100000, 250000, 500000, 1000000], Currency.money), undefined, true),
         ];
 
         this.addMultiplier('clickAttack', OakItemType.Rocky_Helmet);
@@ -64,7 +75,6 @@ export default class OakItems implements Feature {
         this.addMultiplier('money', OakItemType.Amulet_Coin);
         this.addMultiplier('shiny', OakItemType.Shiny_Charm);
         this.addMultiplier('eggStep', OakItemType.Magma_Stone);
-        this.addMultiplier('undergroundCharge', OakItemType.Cell_Battery);
 
         this.itemList.forEach((i) => i.levelKO.subscribe(() => this.maxLevelOakItems(this.itemList.filter((i2) => i2.isMaxLevel()).length)));
     }
@@ -109,11 +119,28 @@ export default class OakItems implements Feature {
     activeCount() {
         let count = 0;
         for (let i = 0; i < this.itemList.length; i += 1) {
-            if (this.itemList[i].isActive) {
+            if (this.itemList[i].isActive && !this.itemList[i].isModuleUpgrade) {
                 count += 1;
             }
         }
         return count;
+    }
+
+    getActiveItems() {
+        let activeItems = [];
+        for (let i = 0; i < this.itemList.length; i++) {
+            if (this.itemList[i].isActive && !this.itemList[i].isModuleUpgrade) {
+                activeItems.push(i);
+            }
+        }
+        return activeItems;
+    }
+
+    setActiveItems(itemsToActivate: number[]) {
+        this.deactivateAll();
+        itemsToActivate.forEach(i => {
+            this.activate(i);
+        });
     }
 
     hasAvailableSlot(): boolean {
@@ -144,6 +171,19 @@ export default class OakItems implements Feature {
         return save;
     }
 
+    // eslint-disable-next-line class-methods-use-this, @typescript-eslint/no-unused-vars
+    update(delta: number): void {
+        // This method intentionally left blank
+    }
+
+    isPermaUpgrade(item: OakItemType) {
+        if (this.itemList[item] === undefined) {
+            return false;
+        }
+
+        return this.itemList[item].isModuleUpgrade;
+    }
+
     isActive(item: OakItemType) {
         if (this.itemList[item] === undefined) {
             return false;
@@ -161,6 +201,10 @@ export default class OakItems implements Feature {
         if (this.maxActiveCount() === 0) {
             return;
         }
+        if (this.itemList[item].isModuleUpgrade) {
+            this.itemList[item].isActive = true;
+            return;
+        }
         if (this.maxActiveCount() === 1) {
             this.deactivateAll();
             this.itemList[item].isActive = true;
@@ -172,7 +216,9 @@ export default class OakItems implements Feature {
 
     deactivateAll() {
         for (let i = 0; i < this.itemList.length; i += 1) {
-            this.itemList[i].isActive = false;
+            if (!this.itemList[i].isModuleUpgrade) {
+                this.itemList[i].isActive = false;
+            }
         }
     }
 

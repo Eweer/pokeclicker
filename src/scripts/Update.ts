@@ -2953,20 +2953,6 @@ class Update implements Saveable {
                 saveData.statistics.npcTalkedTo[GameHelper.hash('magearnamysterygift')] = 1;
             }
         },
-
-        '0.10.26': ({ playerData, saveData, settingsData }) => {
-            // Fix old saves missing Johto Rocket questline blocking them from entering the Mahogany Town hideout, hopefully for good
-            if (saveData.badgeCase[17]) {
-                Update.startQuestLine(saveData, 'Team Rocket Again');
-            }
-
-            saveData.farming?.plotList?.forEach(plot => {
-                if (plot.wanderer) {
-                    // Force genderless
-                    plot.wanderer.gender = 0;
-                }
-            });
-        },
     };
 
     constructor() {

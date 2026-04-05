@@ -1071,7 +1071,7 @@ class Farming implements Feature {
 
         this.berryData[BerryType.Jaboca] = new Berry(
             BerryType.Jaboca,
-            [1875, 3750, 7500, 15000, 30000],
+            [4320, 8640, 16560, 33480, 66960],
             1,
             0.05,
             2800,
@@ -1085,7 +1085,7 @@ class Farming implements Feature {
                 'The cluster of drupelets that make up this Berry pop rhythmically if the Berry is handled roughly.',
                 'The sound of these Berries attracts rare wild Pokémon.',
             ],
-            new Aura(AuraType.Roaming, [1.01, 1.02, 1.03])
+            new Aura(AuraType.Roaming, [1.005, 1.01, 1.015])
         );
 
         this.berryData[BerryType.Rowap] = new Berry(
@@ -1837,6 +1837,12 @@ class Farming implements Feature {
         }
     }
 
+    catchAllWanderers(): void {
+        this.plotList.forEach((plot, index) => {
+            this.handleWanderer(plot);
+        });
+    }
+
     handleNotification(farmNotiType: FarmNotificationType, wanderList?: WandererPokemon[]): void {
         let message = '';
         let image = null;
@@ -2301,7 +2307,6 @@ class Farming implements Feature {
         const shinyModifier = wanderer.shiny ? GameConstants.WANDER_SHINY_FP_MODIFIER : 1;
         const amount = App.game.wallet.gainFarmPoints(farmPoints * shinyModifier);
         GameHelper.incrementObservable(App.game.statistics.farmWandererFarmPointsObtained, amount.amount);
-        player.lowerItemMultipliers(MultiplierDecreaser.Berry, berry.exp);
 
         const pokeball = App.game.pokeballs.calculatePokeballToUse(pokemonData.id, wanderer.shiny, false, EncounterType.wanderer);
         if (pokeball !== GameConstants.Pokeball.None) {
@@ -2326,7 +2331,7 @@ class Farming implements Feature {
             0, 100);
         if (Rand.chance(catchChance / 100)) { // Successfully caught
             App.game.oakItems.use(OakItemType.Magic_Ball);
-            App.game.party.gainPokemonByName(wanderer.name, wanderer.shiny, undefined, wanderer.gender);
+            App.game.party.gainPokemonByName(wanderer.name, wanderer.shiny);
 
             // EV
             const partyPokemon = App.game.party.getPokemonByName(wanderer.name);

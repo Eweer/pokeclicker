@@ -54,7 +54,7 @@ class TemporaryBattle extends TownContent implements TmpTemporaryBattleType {
 
     constructor(
         public name: string,
-        public readonly pokemons: GymPokemon[],
+        private pokemons: GymPokemon[],
         public defeatMessage: string,
         requirements: Requirement[] = [],
         completeRequirements: Requirement[] = undefined,

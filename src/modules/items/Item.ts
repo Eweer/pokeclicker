@@ -143,6 +143,10 @@ export default class Item {
         return false;
     }
 
+    isUseableNoNotification(): boolean {
+        return !!player.itemList[this.name]();
+    }
+
     checkCanUse(): boolean {
         if (!player.itemList[this.name]()) {
             Notifier.notify({

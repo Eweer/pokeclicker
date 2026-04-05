@@ -10,6 +10,8 @@ class BattleFrontier implements Feature {
 
     initialize(): void {}
 
+    update(delta: number): void {}
+
     canAccess(): boolean {
         return true;
     }

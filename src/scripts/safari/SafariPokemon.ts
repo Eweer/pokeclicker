@@ -30,7 +30,7 @@ class SafariPokemon implements PokemonInterface {
         this.type1 = data.type1;
         this.type2 = data.type2;
         this.shiny = PokemonFactory.generateShiny(GameConstants.SHINY_CHANCE_SAFARI);
-        this._displayName = PokemonHelper.displayNameObservable(name);
+        this._displayName = PokemonHelper.displayName(name);
         this.gender = PokemonFactory.generateGender(data.gender.femaleRatio, data.gender.type);
         PokemonHelper.incrementPokemonStatistics(this.id, GameConstants.PokemonStatisticsType.Encountered, this.shiny, this.gender, GameConstants.ShadowStatus.None);
         // Shiny
@@ -59,17 +59,22 @@ class SafariPokemon implements PokemonInterface {
         }
     }
 
+    public static calcPokemonWeight(pokemon): number {
+        return pokemon.weight * (App.game.party.alreadyCaughtPokemonByName(pokemon.name) ? 1 : 2);
+    }
+
+    // FIXED: Multipliers for Nanab/Razz applying when used before a rock.
+
     public get catchFactor(): number {
         const oakBonus = App.game.oakItems.calculateBonus(OakItemType.Magic_Ball);
         let catchF = this.baseCatchFactor + oakBonus + (this.levelModifier * 10);
         if (this.eating > 0) {
             catchF /= 2 - this.levelModifier;
-        }
-        if (this.angry > 0) {
+            if (this.eating === BaitType.Nanab) {
+                catchF *= 1.5 + this.levelModifier;
+            }
+        } else if (this.angry > 0) {
             catchF *= 2 + this.levelModifier;
-        }
-        if (this.eatingBait === BaitType.Nanab) {
-            catchF *= 1.5 + this.levelModifier;
         }
 
         return Math.min(100, catchF);
@@ -79,12 +84,11 @@ class SafariPokemon implements PokemonInterface {
         let escapeF = this.baseEscapeFactor;
         if (this.eating > 0) {
             escapeF /= 4 + this.levelModifier;
-        }
-        if (this.angry > 0) {
+            if (this.eating === BaitType.Razz) {
+                escapeF /= 1.5 + this.levelModifier;
+            }
+        } else if (this.angry > 0) {
             escapeF *= 2 - this.levelModifier;
-        }
-        if (this.eatingBait === BaitType.Razz) {
-            escapeF /= 1.5 + this.levelModifier;
         }
 
         return escapeF;

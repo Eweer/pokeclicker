@@ -22,8 +22,9 @@ export default class BoughtOakItem extends OakItem {
         maxLevel = 5,
         costList: Amount[] = AmountFactory.createArray([50000, 100000, 250000, 500000, 1000000], Currency.money),
         bonusSymbol = '×',
+        isModuleUpgrade = false,
     ) {
-        super(name, displayName, description, increasing, bonusList, inactiveBonus, -1, expGain, expList, maxLevel, costList, bonusSymbol);
+        super(name, displayName, description, increasing, bonusList, inactiveBonus, -1, expGain, expList, maxLevel, costList, bonusSymbol, isModuleUpgrade);
         this.purchasedKO = ko.observable(false);
     }
 

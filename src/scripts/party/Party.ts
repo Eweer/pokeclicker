@@ -370,6 +370,10 @@ class Party implements Feature, TmpPartyType {
         };
     }
 
+    update(delta: number): void {
+        // This method intentionally left blank
+    }
+
     get caughtPokemon(): ReadonlyArray<PartyPokemon> {
         return this._caughtPokemon();
     }

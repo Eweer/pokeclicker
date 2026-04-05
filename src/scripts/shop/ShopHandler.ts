@@ -34,7 +34,8 @@ class ShopHandler {
     }
 
     public static increaseAmount(n: number) {
-        const newVal = (parseInt(this.shopObservable().amountInput().val().toString(), 10) || 0) + n;
+        const prevVal = (parseInt(this.shopObservable().amountInput().val().toString(), 10) || 0);
+        const newVal = prevVal == 1 ? n : prevVal + n;
         this.shopObservable().amountInput().val(newVal > 1 ? newVal : 1).change();
     }
 

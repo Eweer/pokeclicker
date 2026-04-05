@@ -52,6 +52,7 @@ class PartyPokemon implements Saveable, TmpPartyPokemonType {
     _attackBonusPercent: KnockoutObservable<number>;
     _attackBonusAmount: KnockoutObservable<number>;
     _category: KnockoutObservableArray<number>;
+    _translatedName: KnockoutObservable<string>;
     _nickname: KnockoutObservable<string>;
     _displayName: KnockoutComputed<string>;
     _pokerus: KnockoutObservable<GameConstants.Pokerus>;
@@ -82,6 +83,7 @@ class PartyPokemon implements Saveable, TmpPartyPokemonType {
         this._attackBonusPercent = ko.observable(0).extend({ numeric: 0 });
         this._attackBonusAmount = ko.observable(0).extend({ numeric: 0 });
         this._category = ko.observableArray([0]);
+        this._translatedName = PokemonHelper.displayName(name);
         this._pokerus = ko.observable(GameConstants.Pokerus.Uninfected).extend({ numeric: 0 });
         this._effortPoints = ko.observable(0).extend({ numeric: 0 });
         this.evs = ko.pureComputed(() => {
@@ -112,11 +114,11 @@ class PartyPokemon implements Saveable, TmpPartyPokemonType {
         this.hideShinyImage = ko.observable(false);
         this._nickname = ko.observable();
         this._nickname.subscribe((value) => {
-            if (value === PokemonHelper.displayName(this.name)) {
+            if (value === this._translatedName()) {
                 AchievementHandler.unlockAchievement('A cat named Cat');
             }
         });
-        this._displayName = ko.pureComputed(() => this._nickname() || PokemonHelper.displayName(this.name));
+        this._displayName = ko.pureComputed(() => this._nickname() ? this._nickname() : this._translatedName());
         this._shadow = ko.observable(shadow);
         this._showShadowImage = ko.observable(false);
         this._attack = ko.computed(() => this.calculateAttack());

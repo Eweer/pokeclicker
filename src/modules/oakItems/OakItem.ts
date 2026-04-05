@@ -15,6 +15,7 @@ export default class OakItem extends ExpUpgrade {
     };
 
     private isActiveKO: KnockoutObservable<boolean>;
+    private isModuleUpgradeKO: KnockoutObservable<boolean>;
 
     constructor(
         name: any,
@@ -29,9 +30,11 @@ export default class OakItem extends ExpUpgrade {
         maxLevel = 5,
         costList: Amount[] = AmountFactory.createArray([50000, 100000, 250000, 500000, 1000000], Currency.money),
         public bonusSymbol: string = '×',
+        isModuleUpgrade: boolean = false,
     ) {
         super(name, displayName, maxLevel, expList, costList, bonusList, increasing);
         this.isActiveKO = ko.observable(false);
+        this.isModuleUpgradeKO = ko.observable(isModuleUpgrade);
     }
 
     use(exp: number = this.expGain, scale = 1) {
@@ -96,6 +99,14 @@ export default class OakItem extends ExpUpgrade {
 
     set isActive(bool: boolean) {
         this.isActiveKO(bool);
+    }
+
+    get isModuleUpgrade() {
+        return this.isModuleUpgradeKO();
+    }
+
+    set isModuleUpgrade(bool: boolean) {
+        this.isModuleUpgradeKO(bool);
     }
 
     get bonusText(): string {

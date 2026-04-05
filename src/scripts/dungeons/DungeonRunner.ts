@@ -19,10 +19,13 @@ class DungeonRunner {
     public static fightingLootEnemy: boolean;
     public static continuousInteractionInput = false;
 
+    public static isAutoInteracting: KnockoutObservable<boolean> = ko.observable(true);
+
+
     public static initializeDungeon(dungeon: Dungeon) {
         if (!DungeonRunner.canStartDungeon(dungeon)) {
-            let message;
-            let notifType;
+            let message: string;
+            let notifType: NotificationOption;
             if (!dungeon.isUnlocked()) {
                 if (dungeon.name === 'Viridian Forest') {
                     message = 'You need the Dungeon Ticket to access dungeons.\n<i>Check out the shop at Viridian City.</i>';
@@ -61,8 +64,10 @@ class DungeonRunner {
         DungeonRunner.timeLeft(GameConstants.DUNGEON_TIME * DungeonRunner.timeBonus());
 
         DungeonRunner.timeLeftPercentage(100);
-        const dungeonSize = DungeonRunner.dungeon.getDungeonSize(false);
-
+        // Dungeon size increases with each region
+        let dungeonSize = GameConstants.BASE_DUNGEON_SIZE + (dungeon.difficulty);
+        // Decrease dungeon size by 1 for every 10, 100, 1000 etc completes
+        dungeonSize -= Math.max(0, App.game.statistics.dungeonsCleared[GameConstants.getDungeonIndex(DungeonRunner.dungeon.name)]().toString().length - 1);
         const flash = DungeonRunner.getFlash(DungeonRunner.dungeon.name);
         const generateChestLoot = () => {
             const clears = App.game.statistics.dungeonsCleared[GameConstants.getDungeonIndex(dungeon.name)]();
@@ -78,7 +83,7 @@ class DungeonRunner {
             return { tier, loot };
         };
         // Dungeon size minimum of MIN_DUNGEON_SIZE
-        DungeonRunner.map = new DungeonMap(dungeonSize, generateChestLoot, flash);
+        DungeonRunner.map = new DungeonMap(Math.max(GameConstants.MIN_DUNGEON_SIZE, dungeonSize), generateChestLoot, flash);
 
         DungeonRunner.chestsOpened(0);
         DungeonRunner.encountersWon(0);
@@ -109,6 +114,10 @@ class DungeonRunner {
         // Tick our dungeon guides
         DungeonGuides.hired()?.tick();
 
+        if (this.isAutoInteracting()) {
+            DungeonRunner.handleInteraction();
+        }
+
         if (DungeonRunner.map.playerMoved()) {
             DungeonRunner.timeLeft(DungeonRunner.timeLeft() - GameConstants.DUNGEON_TICK);
             DungeonRunner.timeLeftPercentage(Math.floor(DungeonRunner.timeLeft() / (GameConstants.DUNGEON_TIME * FluteEffectRunner.getFluteMultiplier(GameConstants.FluteItemType.Time_Flute)) * 100));
@@ -134,13 +143,14 @@ class DungeonRunner {
         }
     }
 
+
     /**
      * Handles the interaction event in the dungeon view and from keybinds
      */
     public static handleInteraction(source: GameConstants.DungeonInteractionSource = GameConstants.DungeonInteractionSource.Click) {
         if (DungeonRunner.fighting() && !DungeonBattle.catching() && source === GameConstants.DungeonInteractionSource.Click) {
             DungeonBattle.clickAttack();
-        } else if (DungeonRunner.map.currentTile().type() === GameConstants.DungeonTileType.entrance && (source === GameConstants.DungeonInteractionSource.Click || source === GameConstants.DungeonInteractionSource.Keybind) && !DungeonGuides.hired()) {
+        } else if (DungeonRunner.map.currentTile().type() === GameConstants.DungeonTileType.entrance && source === GameConstants.DungeonInteractionSource.Keybind && !DungeonGuides.hired()) {
             DungeonRunner.dungeonLeave();
         } else if (DungeonRunner.map.currentTile().type() === GameConstants.DungeonTileType.chest) {
             DungeonRunner.openChest();
@@ -355,7 +365,7 @@ class DungeonRunner {
 
     public static dungeonCompleted(dungeon: Dungeon, includeShiny: boolean) {
         const possiblePokemon: PokemonNameType[] = dungeon.allAvailablePokemon();
-        return possiblePokemon.length != 0 && RouteHelper.listCompleted(possiblePokemon, includeShiny);
+        return RouteHelper.listCompleted(possiblePokemon, includeShiny);
     }
 
     public static isAchievementsComplete(dungeon: Dungeon) {

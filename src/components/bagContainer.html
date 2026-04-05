@@ -1,0 +1,41 @@
+<div id="bagContainer" class="card sortable border-secondary mb-3" data-bind="visible: player.regionStarters[GameConstants.Region.kanto]() != GameConstants.Starter.None">
+    <div class="card-header p-0" data-toggle="collapse" href="#bagBody">
+        <span>Bag</span>
+    </div>
+    <div id="bagBody" class="card-body p-0 show">
+        <div class="d-flex flex-wrap justify-content-around p-1">
+            <!-- ko foreach: Object.entries(ItemList).filter(function([name, item]) {
+                if (item instanceof TreasureItem && item.valueType !== UndergroundItemValueType.Shard) return false;
+                if (item instanceof BattleItem) return false;
+                if (item instanceof EggItem) return false;
+                if (item instanceof MulchItem) return false;
+                if (item instanceof FluteItem) return false;
+                if (item instanceof PokeballItem) return false;
+                if (item instanceof PokemonItem) return false;
+                if (item instanceof BuyKeyItem) return false;
+                if (item instanceof BuyOakItem) return false;
+                if (item instanceof ShovelItem) return false;
+                if (item instanceof QuestItem) return false;
+                if (item instanceof MegaStoneItem) return false;
+                if (item instanceof BerryItem) return false;
+                var qty = player.itemAmount(name)();
+                return qty > 0;
+            }) -->
+            <div class="text-center mx-1 my-1"
+                data-bind="tooltip: {
+                    title: $data[1].displayName || $data[0],
+                    trigger: 'hover',
+                    placement: 'top',
+                    animation: false
+                }">
+                <img style="width: 32px; height: 32px; image-rendering: pixelated;"
+                    data-bind="attr: { src: $data[1].image }"
+                />
+                <div style="font-size: 0.75rem; line-height: 1.2;"
+                    data-bind="text: GameConstants.formatNumber(player.itemAmount($data[0])())">
+                </div>
+            </div>
+            <!-- /ko -->
+        </div>
+    </div>
+</div>

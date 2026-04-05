@@ -57,4 +57,8 @@ export default class BadgeCase implements Feature {
         // everything else is assumed to be false
         return GameHelper.filterArrayEnd(this.badgeList.map(ko.unwrap));
     }
+
+    // This method intentionally left blank
+    // eslint-disable-next-line class-methods-use-this
+    update(): void { }
 }

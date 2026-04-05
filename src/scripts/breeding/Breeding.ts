@@ -22,6 +22,9 @@ class Breeding implements Feature {
     private _queueList: KnockoutObservableArray<HatcheryQueueEntry>;
     public queueSlots: KnockoutObservable<number>;
 
+    public isPaused: KnockoutObservable<boolean> = ko.observable(false);
+    public keepProcessingEggs: KnockoutObservable<boolean> = ko.observable(false);
+
     public readonly hatchList: Record<GameConstants.EggItemType, PokemonNameType[][]> = {
         [GameConstants.EggItemType.Fire_egg]: [
             ['Charmander', 'Vulpix', 'Growlithe', 'Magmar'],
@@ -112,6 +115,9 @@ class Breeding implements Feature {
 
     initialize(): void {
         BreedingController.initialize();
+    }
+
+    update(delta: number): void {
     }
 
     canAccess(): boolean {
@@ -208,6 +214,10 @@ class Breeding implements Feature {
     }
 
     public progressEggs(amount: number) {
+        if (this.isPaused()) {
+            return;
+        }
+
         amount *= this.getStepMultiplier();
 
         amount = Math.round(amount);
@@ -234,7 +244,7 @@ class Breeding implements Feature {
             }
         }
 
-        this.hatcheryHelpers.addSteps(amount, this.multiplier);
+        this.hatcheryHelpers.addSteps(amount, this.multiplier, this.keepProcessingEggs());
 
         if (emptySlots) {
             // Check for any empty slots between incubating eggs, move them if a gap is found.
@@ -246,10 +256,11 @@ class Breeding implements Feature {
                     this.moveEggs();
                 }
             }
-
-            // Fill empty egg slots from queue.
-            while (this._queueList().length && emptySlots--) {
-                this.nextEggFromQueue();
+            if (this.keepProcessingEggs()) {
+                // Fill empty egg slots from queue.
+                while (this._queueList().length && emptySlots--) {
+                    this.nextEggFromQueue();
+                }
             }
         }
     }

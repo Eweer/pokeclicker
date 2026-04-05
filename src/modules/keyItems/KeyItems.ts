@@ -132,6 +132,9 @@ export default class KeyItems implements Feature {
         }
         return save;
     }
+
+    // eslint-disable-next-line class-methods-use-this, @typescript-eslint/no-unused-vars
+    update(delta: number): void {}
 }
 
 namespace KeyItems {

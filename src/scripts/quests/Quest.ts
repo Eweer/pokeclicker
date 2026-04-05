@@ -6,6 +6,8 @@ type QuestOptionalArgument = {
 };
 
 abstract class Quest {
+    public static questObservable: KnockoutObservable<Quest> = ko.observable();
+
     index: number;
     amount: number
     protected customDescription?: string;
@@ -90,7 +92,8 @@ abstract class Quest {
                 this.customReward();
             }
             if (this.optionalArgs?.clearedMessage !== undefined) {
-                QuestLineController.showQuestStepClearedModal(this);
+                Quest.questObservable(this);
+                $('#questStepClearedModal').modal('show');
             }
             this.deleteFocusSub();
             this.claimed(true);

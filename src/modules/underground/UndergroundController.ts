@@ -1,4 +1,5 @@
 import OakItemType from '../enums/OakItemType';
+import OakItemLoadouts from '../oakItems/OakItemLoadouts';
 import Rand from '../utilities/Rand';
 import { MineConfig, MineConfigs, MineType } from './mine/MineConfig';
 import UndergroundItem from './UndergroundItem';
@@ -104,7 +105,8 @@ export class UndergroundController {
     }
 
     public static calculateRewardAmountFromMining(): number {
-        if (!App.game.oakItems.isActive(OakItemType.Treasure_Scanner)) {
+        if (!App.game.oakItems.isActive(OakItemType.Treasure_Scanner)
+            && !App.game.oakItems.isPermaUpgrade(OakItemType.Treasure_Scanner)) {
             return 1;
         }
 
@@ -201,6 +203,19 @@ export class UndergroundController {
     }
 
     public static openUndergroundModal() {
+        if (false && App.game.underground.canAccess()) {
+            //const previousLoadout: number = App.game.oakItemLoadouts.selectedLoadout();
+
+            const previousItems: number[] = App.game.oakItems.getActiveItems();
+            App.game.oakItemLoadouts.activateLoadout(4);
+
+            $('#mineModal').one('hidden.bs.modal', () => {
+                // App.game.oakItemLoadouts.activateLoadout(previousLoadout);
+                App.game.oakItems.setActiveItems(previousItems);
+            });
+
+            $('#mineModal').modal('show');
+        }
         if (App.game.underground.canAccess()) {
             $('#mineModal').modal('show');
         } else {
@@ -416,16 +431,6 @@ export class UndergroundController {
             message: 'Your Underground Battery has been fully charged and is ready to be discharged.',
             type: NotificationOption.info,
             setting: NotificationConstants.NotificationSetting.Underground.battery_full,
-            timeout: 10 * SECOND,
-        });
-    }
-
-    public static notifyMineFound() {
-        Notifier.notify({
-            title: 'Underground',
-            message: 'A new Underground Layer has been discovered.',
-            type: NotificationOption.info,
-            setting: NotificationConstants.NotificationSetting.Underground.underground_mine_found,
             timeout: 10 * SECOND,
         });
     }

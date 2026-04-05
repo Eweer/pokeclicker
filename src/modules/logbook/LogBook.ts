@@ -54,6 +54,8 @@ export default class LogBook implements Feature {
         return true;
     }
 
+    update(): void {} // This method intentionally left blank
+
     private canLog(logBookType: LogBookType): boolean {
         return Settings.getSetting('logBook.' + logBookType.label).value;
     }

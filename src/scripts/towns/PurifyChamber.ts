@@ -34,6 +34,8 @@ class PurifyChamber implements Saveable {
     public flowNeeded: KnockoutComputed<number>;
     private notified = false;
 
+    public autoPurify: KnockoutObservable<boolean> = ko.observable(false);
+
     private static shortcutRequirement = new MultiRequirement([
         new ShadowPokemonRequirement(1, GameConstants.ShadowStatus.Purified),
         new ShadowPokemonRequirement(131, GameConstants.ShadowStatus.Purified, GameConstants.AchievementOption.less),
@@ -52,6 +54,10 @@ class PurifyChamber implements Saveable {
                 1500 * Math.exp(0.1 * purifiedPokemon);
             return Math.round(flow);
         });
+    }
+
+    public toggleAutoPurify() {
+        this.autoPurify(!this.autoPurify());
     }
 
     public canPurify() : boolean {
@@ -84,14 +90,22 @@ class PurifyChamber implements Saveable {
         this.currentFlow(Math.min(newFlow, this.flowNeeded()));
 
         if (!this.notified && this.currentFlow() >= this.flowNeeded()) {
-            this.notified = true;
-            Notifier.notify({
-                title: 'Purify Chamber',
-                message: 'Maximum Flow has accumulated at the Purify Chamber in Orre!',
-                type: NotificationConstants.NotificationOption.primary,
-                sound: NotificationConstants.NotificationSound.General.max_flow,
-                timeout: 15 * GameConstants.MINUTE,
-            });
+            if (this.autoPurify()) {
+                this.purify();
+                const options = App.game.party.caughtPokemon.filter((p) => p.shadow == GameConstants.ShadowStatus.Shadow);
+                if (options.length > 0) {
+                    this.selectedPokemon(options[0]);
+                }
+            } else {
+                this.notified = true;
+                Notifier.notify({
+                    title: 'Purify Chamber',
+                    message: 'Maximum Flow has accumulated at the Purify Chamber in Orre!',
+                    type: NotificationConstants.NotificationOption.primary,
+                    sound: NotificationConstants.NotificationSound.General.max_flow,
+                    timeout: 15 * GameConstants.MINUTE,
+                });
+            }
         }
     }
 

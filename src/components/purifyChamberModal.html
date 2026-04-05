@@ -2,8 +2,23 @@
 aria-labelledby="purifyChamberModalLabel">
     <div class="modal-dialog modal-dialog-scrollable" role="document">
         <div class="modal-content">
-            <div class="modal-header">
+            <div class="modal-header" style="align-items: center;">
                 <h5 class="modal-title">Purify Chamber</h5>
+                <!-- ko let: { autoPurify: App.game.purifyChamber.autoPurify } -->
+                <button class="btn btn-danger p-2" style="height: 40px" data-bind="
+                    text: `🔁`,
+                    css: {
+                        'btn-danger': !autoPurify(),
+                        'btn-success': autoPurify()
+                    },
+                    tooltip: {
+                        title: `Auto purify: ${autoPurify() ? 'On' : 'Off'}`,
+                        trigger: 'hover',
+                        placement:'right'
+                    },
+                    click: () => App.game.purifyChamber.toggleAutoPurify()">
+                </button>
+                <!-- /ko -->
             </div>
             <div class="modal-body">
                 <!-- ko if: App.game.party.caughtPokemon.some((p) => p.shadow == GameConstants.ShadowStatus.Shadow) -->

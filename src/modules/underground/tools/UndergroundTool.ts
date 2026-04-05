@@ -4,6 +4,7 @@ import Notifier from '../../notifications/Notifier';
 import NotificationConstants from '../../notifications/NotificationConstants';
 import { Observable, PureComputed } from 'knockout';
 import { UNDERGROUND_MAX_CLICKS_PER_SECOND } from '../UndergroundController';
+import { SECOND } from '../../GameConstants';
 
 type UndergroundToolProperties = {
     id: UndergroundToolType;
@@ -21,6 +22,7 @@ export default class UndergroundTool {
     private _toolProperties: UndergroundToolProperties;
 
     private _durability: Observable<number> = ko.observable(1).extend({ numeric: 5 });
+    private _maxDurabiltyNotificationSent: boolean = false;
 
     public canUseTool: PureComputed<boolean> = ko.pureComputed(() => this.durability >= this.durabilityPerUse);
     public restoreRatePerSecond: PureComputed<number> = ko.pureComputed(() => this.calculateDurabilityRestoreRatePerSecond(App.game.underground.undergroundLevel));
@@ -48,12 +50,20 @@ export default class UndergroundTool {
 
         this._durability(Math.min(this.durability + restorePercentage, 1));
 
-        if (this.durability === 1) {
+        if (this._maxDurabiltyNotificationSent) {
+            if (this.durability <= 1 - (this.durabilityPerUse * 5)) {
+                this._maxDurabiltyNotificationSent = false;
+                return;
+            }
+        }
+
+        if (this.durability === 1 && !this._maxDurabiltyNotificationSent) {
+            this._maxDurabiltyNotificationSent = true;
             Notifier.notify({
                 title: 'Underground tools',
                 message: `${this.displayName} reached 100% durability!`,
                 type: NotificationConstants.NotificationOption.success,
-                timeout: 1e4,
+                timeout: 10 * SECOND,
                 sound: NotificationConstants.NotificationSound.General.underground_energy_full,
                 setting: NotificationConstants.NotificationSetting.Underground.underground_energy_full,
             });

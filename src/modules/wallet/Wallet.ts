@@ -161,4 +161,8 @@ export default class Wallet implements Feature {
             currencies: this.currencies.map(ko.unwrap),
         };
     }
+
+    update(): void {
+        // This method intentionally left blank
+    }
 }

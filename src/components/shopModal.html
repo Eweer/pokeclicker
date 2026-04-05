@@ -31,6 +31,12 @@
                                 <button class="btn btn-secondary smallButton smallFont" type="button" onclick="ShopHandler.increaseAmount(100)">
                                     +100
                                 </button>
+                                <button class="btn btn-secondary smallButton smallFont" type="button" onclick="ShopHandler.increaseAmount(120)">
+                                    +120
+                                </button>
+                                <button class="btn btn-secondary smallButton smallFont" type="button" onclick="ShopHandler.increaseAmount(1440)">
+                                    +1440
+                                </button>
                             <!-- /ko -->
                             <!-- ko if: Settings.getSetting('shopButtons').observableValue() == 'multiplication' -->
                                 <button class="btn btn-secondary smallButton smallFont" type="button" onclick="ShopHandler.multiplyAmount(10)">
@@ -73,15 +79,16 @@
         <!-- ko if: $data.isVisible() -->
         <div class="col-6 col-sm-4 col-lg-3">
            <button class="shopItem clickable btn btn-block btn-secondary"
-               data-bind="click: function() {ShopHandler.setSelected($index())},
-               css: { active: ShopHandler.selected() == $index() },
-               attr: { disabled: !$data.isAvailable() || $data.isSoldOut() },
-               tooltip: {
-                  title: $data.shopTooltip,
-                  trigger: 'hover',
-                  placement:'bottom',
-                  boundary: 'viewport',
-                  html: true
+                data-bind="click: function() {ShopHandler.setSelected($index())},
+                event: { contextmenu: function(data, e) { e.preventDefault(); ShopHandler.setSelected($index()); ShopHandler.buyItem(); } },
+                css: { active: ShopHandler.selected() == $index() },
+                attr: { disabled: !$data.isAvailable() || $data.isSoldOut() },
+                tooltip: {
+                    title: $data.shopTooltip,
+                    trigger: 'hover',
+                    placement:'bottom',
+                    boundary: 'viewport',
+                    html: true
                 }">
                <knockout data-bind="if: ($data instanceof PokemonItem)">
                     <span style="position: absolute; top: 12px; left: 20px;"

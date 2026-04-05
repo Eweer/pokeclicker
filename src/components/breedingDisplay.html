@@ -2,10 +2,34 @@
     <div class="card-header p-0" data-toggle="collapse" href="#eggList">
         <span>Hatchery</span>
     </div>
-    <button class='btn btn-sm btn-primary' style="position: absolute; right: 0px; top: 0px; width: auto; height: 41px;"
-            data-bind='click: function(){ BreedingController.openBreedingModal(); }'>
-        List
-    </button>
+      <div style="position: absolute; left: 0px; top: 0px; display: flex; gap: 1px;">
+        <button class='btn btn-sm'
+            style="width: 40px; height: 41px;"
+            data-bind="
+                css: { 'btn-success': !App.game.breeding.isPaused(), 'btn-danger': App.game.breeding.isPaused() },
+                click: () => App.game.breeding.isPaused(!App.game.breeding.isPaused()),
+                text: App.game.breeding.isPaused() ? '▶️' : '⏸️',
+                tooltip: { title: 'Pause Egg Progress', placement: 'bottom', trigger: 'hover' }">
+        </button>
+        <button class='btn btn-sm'
+            style="width: 40px; height: 41px;"
+            data-bind="
+                css: { 'btn-success': App.game.breeding.keepProcessingEggs(), 'btn-danger': !App.game.breeding.keepProcessingEggs() },
+                click: () => App.game.breeding.keepProcessingEggs(!App.game.breeding.keepProcessingEggs()),
+                text: '🔁',
+                tooltip: { title: 'Egg replaced when hatched', placement: 'bottom', trigger: 'hover' }">
+        </button>
+    </div>
+    <div style="position: absolute; right: 0px; top: 0px; display: flex; gap: 1px;">
+        <button class='btn btn-sm btn-primary' style="width: auto; height: 41px;"
+                data-bind='click: function(){ BreedingController.quickAddMaxPokemon(); }'>
+            Add All
+        </button>
+        <button class='btn btn-sm btn-primary' style="width: auto; height: 41px;"
+                data-bind='click: function(){ BreedingController.openBreedingModal(); }'>
+            List
+        </button>
+    </div>
     <div id='eggList' class="card-body p-0 show">
       <div class="row m-0" data-bind="foreach: App.game.breeding.eggList">
         <div class="col-3 col-md-6 p-0 eggSlot">
@@ -36,7 +60,7 @@
             <div style="margin-top: 20px;" class="clickable" data-bind="
                 click: function(){ if (progress() >= 100) App.game.breeding.hatchPokemonEgg($index()) },
                 tooltip: {
-                    title: BreedingController.getEggPokemonName($data) ? PokemonHelper.displayName(BreedingController.getEggPokemonName($data)) : '???',
+                    title: BreedingController.getEggPokemonName($data) ? PokemonHelper.displayName(BreedingController.getEggPokemonName($data))() : '???',
                     trigger: 'hover',
                     placement: 'bottom',
                     class: 'no-click',

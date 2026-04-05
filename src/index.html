@@ -150,6 +150,9 @@
                     <!-- pokeball selector -->
                     @import "pokeballSelector.html"
 
+                    <!-- Pokéball Count -->
+                    @import "pokeballCount.html"
+
                     <!-- Battle Item container-->
                     @import "battleItemContainer.html"
 
@@ -363,6 +366,10 @@
 
                     <!-- Shortcuts Menu -->
                     @import "shortcutsContainer.html"
+
+                    <!-- LogBook -->
+                    @import "logBookDisplay.html"
+
                 </div>
                 <div id="right-column-2" class="col-12" data-bind="css: {
                     'col-lg-12': Settings.getSetting('gameDisplayStyle').observableValue() !== 'fullWidth5',
@@ -534,9 +541,6 @@
 
 <!-- Moon Phase Modal -->
 @import "moonPhaseModal.html"
-
-<!-- QuestLine Details Modal -->
-@import "questLineDetailsModal.html"
 
 <script type="text/javascript">
 // Check if we are running in an iframe

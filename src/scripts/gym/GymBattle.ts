@@ -4,6 +4,9 @@ class GymBattle extends Battle {
     static index: KnockoutObservable<number> = ko.observable(0);
     static totalPokemons: KnockoutObservable<number> = ko.observable(0);
 
+    static isAutoClicking: KnockoutObservable<boolean> = ko.observable(false);
+    static shouldAutoClick: KnockoutObservable<boolean> = ko.observable(false);
+
     public static pokemonAttack() {
         if (GymRunner.running()) {
             super.pokemonAttack();
@@ -15,6 +18,29 @@ class GymBattle extends Battle {
             super.clickAttack();
         }
     }
+
+    /**
+     * Autoclick functionality for the lazy ones that want to keep using the mouse.
+     */
+    public static toggleAutoClick(isButtonAction = true) {
+        if (this.isAutoClicking()) {
+            this.isAutoClicking(false);
+            if (this.autoClickInterval !== null) {
+                clearInterval(this.autoClickInterval);
+                this.autoClickInterval = null;
+            }
+            this.shouldAutoClick(false);
+        } else {
+            this.isAutoClicking(true);
+            this.autoClickInterval = setInterval(() => {
+                if (App.game.gameState == GameConstants.GameState.gym) {
+                    GymBattle.clickAttack();
+                }
+            }, 50);
+            this.shouldAutoClick(true);
+        }
+    }
+
     /**
      * Award the player with exp, and go to the next pokemon
      */

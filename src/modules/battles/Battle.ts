@@ -25,7 +25,10 @@ export default class Battle {
     static pokeball: KnockoutObservable<GameConstants.Pokeball> = ko.observable(GameConstants.Pokeball.Pokeball);
     static lastPokemonAttack = Date.now();
     static lastClickAttack = Date.now();
-    static route;
+    static isAutoClicking: KnockoutObservable<boolean> = ko.observable(false);
+    static shouldAutoClick: KnockoutObservable<boolean> = ko.observable(false);
+    protected static autoClickInterval: ReturnType<typeof setInterval> | null = null;
+    static route: number;
 
     /**
      * Probably not needed right now, but might be if we add more logic to a gameTick.
@@ -56,6 +59,9 @@ export default class Battle {
         if (App.game.challenges.list.disableClickAttack.active() && player.regionStarters[GameConstants.Region.kanto]() != GameConstants.Starter.None) {
             return;
         }
+        if (this.enemyPokemon == null) {
+            return;
+        }
         // TODO: figure out a better way of handling this
         // Limit click attack speed, Only allow 1 attack per 50ms (20 per second)
         const now = Date.now();
@@ -66,10 +72,47 @@ export default class Battle {
         if (!this.enemyPokemon()?.isAlive()) {
             return;
         }
-        GameHelper.incrementObservable(App.game.statistics.clickAttacks);
+        if (!this.isAutoClicking()) {
+            GameHelper.incrementObservable(App.game.statistics.clickAttacks);
+        }
         this.enemyPokemon().damage(App.game.party.calculateClickAttack(true));
         if (!this.enemyPokemon().isAlive()) {
             this.defeatPokemon();
+        }
+    }
+
+    /**
+     * Autoclick functionality for the lazy ones that want to keep using the mouse.
+     */
+    public static toggleAutoClick() {
+        if (this.isAutoClicking()) {
+            this.isAutoClicking(false);
+            if (this.autoClickInterval !== null) {
+                clearInterval(this.autoClickInterval);
+                this.autoClickInterval = null;
+            }
+            this.shouldAutoClick(false);
+        } else {
+            this.isAutoClicking(true);
+            this.autoClickInterval = setInterval(() => {
+                if (App.game.gameState == GameConstants.GameState.fighting)
+                    Battle.clickAttack();
+            }, 50);
+            this.shouldAutoClick(true);
+        }
+    }
+
+    public static pauseAutoClick() {
+        if (this.isAutoClicking()) {
+            this.toggleAutoClick();
+            this.shouldAutoClick(true);
+        }
+    }
+
+    public static resumeAutoClick() {
+        if (this.shouldAutoClick() && !this.isAutoClicking()) {
+            this.toggleAutoClick();
+            this.shouldAutoClick(false);
         }
     }
 

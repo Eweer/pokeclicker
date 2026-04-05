@@ -175,7 +175,6 @@ export const pokemonList = createPokemonArray(
         'gender': {
             'femaleRatio': 0.125,
         },
-        'heldItem': { type: ItemType.item, id: 'Rare_Candy' },
     },
     {
         'id': 1.03,
@@ -1641,7 +1640,6 @@ export const pokemonList = createPokemonArray(
         'gender': {
             'femaleRatio': 0,
         },
-        'heldItem': { type: ItemType.item, id: 'Rare_Candy' },
     },
     {
         'id': 25.13,
@@ -7352,7 +7350,6 @@ export const pokemonList = createPokemonArray(
         'gender': {
             'femaleRatio': 0.125,
         },
-        'heldItem': { type: ItemType.item, id: 'Rare_Candy' },
     },
     {
         'id': 175.02,
@@ -11957,11 +11954,6 @@ export const pokemonList = createPokemonArray(
         'levelType': LevelType.mediumfast,
         'exp': 147,
         'catchRate': 45,
-        'evolutions': [
-            WeatherRestrictedLevelEvolution([WeatherType.Harsh_Sunlight], 'Castform', 'Castform (Sunny)', 1, true),
-            WeatherRestrictedLevelEvolution([WeatherType.Rain, WeatherType.Thunderstorm], 'Castform', 'Castform (Rainy)', 1, true),
-            WeatherRestrictedLevelEvolution([WeatherType.Snow, WeatherType.Hail, WeatherType.Blizzard], 'Castform', 'Castform (Snowy)', 1, true),
-        ],
         'base': {
             'hitpoints': 70,
             'attack': 70,
@@ -23945,23 +23937,6 @@ export const pokemonList = createPokemonArray(
         },
     },
     {
-        'id': 778.02,
-        'name': 'Mimikyu (Busted)',
-        'type': [PokemonType.Ghost, PokemonType.Fairy],
-        'eggCycles': 20,
-        'levelType': LevelType.mediumfast,
-        'exp': 167,
-        'catchRate': 45,
-        'base': {
-            'hitpoints': 55,
-            'attack': 90,
-            'specialAttack': 50,
-            'defense': 80,
-            'specialDefense': 105,
-            'speed': 96,
-        },
-    },
-    {
         'id': 779,
         'name': 'Bruxish',
         'type': [PokemonType.Water, PokemonType.Psychic],
@@ -24199,8 +24174,8 @@ export const pokemonList = createPokemonArray(
         'exp': 140,
         'catchRate': 45,
         'evolutions': [
-            DayTimedLevelEvolution('Cosmoem', 'Solgaleo', 53),
-            NightTimedLevelEvolution('Cosmoem', 'Lunala', 53),
+            LevelEvolution('Cosmoem', 'Solgaleo', 53),
+            LevelEvolution('Cosmoem', 'Lunala', 53),
         ],
         'base': {
             'hitpoints': 43,

@@ -43,6 +43,7 @@ class Plot implements Saveable {
     isMulched: KnockoutComputed<boolean>;
     stage: KnockoutComputed<number>;
     tooltip: KnockoutComputed<string>;
+    timeTooltip: KnockoutComputed<string>;
     notifications: FarmNotificationType[];
 
     emittingAura: {
@@ -55,7 +56,7 @@ class Plot implements Saveable {
         this._isSafeLocked = ko.observable(false);
         this._berry = ko.observable(berry).extend({ numeric: 0 });
         this._lastPlanted = ko.observable(berry).extend({ numeric: 0 });
-        this._age = ko.observable(age).extend({ numeric: 5 });
+        this._age = ko.observable(age);
         this._mulch = ko.observable(mulch).extend({ numeric: 0 });
         this._mulchTimeLeft = ko.observable(mulchTimeLeft).extend({ numeric: 3 });
         this._wanderer = ko.observable(undefined);
@@ -75,7 +76,7 @@ class Plot implements Saveable {
 
                 const boost = this.auraBoost();
                 const value = this.berryData.aura.getAuraValue(this.stage());
-                return value > 1 ? value * boost : value / boost;
+                return value > 1 || this.berry === BerryType.Micle ? value * boost : value / boost;
             }).extend({ rateLimit: 50 }),
         };
 
@@ -194,7 +195,7 @@ class Plot implements Saveable {
             if (this.berry === BerryType.None) {
                 return PlotStage.Seed;
             }
-            return this.berryData.growthTime.findIndex(t => this.age < t);
+            return this.berryData.growthTime.findIndex(t => this.age <= t);
         });
 
         this.tooltip = ko.pureComputed(() => {
@@ -286,7 +287,7 @@ class Plot implements Saveable {
 
             // Wanderer
             if (this.wanderer) {
-                tooltip.push(`A wild <strong>${PokemonHelper.displayName(this.wanderer.name)}</strong> is wandering around`);
+                tooltip.push(`A wild <strong>${PokemonHelper.displayName(this.wanderer.name)()}</strong> is wandering around`);
             }
 
             // Mutation
@@ -297,6 +298,24 @@ class Plot implements Saveable {
             }
 
             return tooltip.join('<br/>');
+        });
+
+        this.timeTooltip = ko.pureComputed(() => {
+            const timeTooltip = [];
+            if (this.berry !== BerryType.None) {
+                // Petaya Effect
+                if (App.game.farming.berryInFarm(BerryType.Petaya, PlotStage.Berry, true) && this.berry !== BerryType.Petaya && this.stage() == PlotStage.Berry) {
+                    timeTooltip.push('∞');
+                // Normal Time
+                } else {
+                    timeTooltip.push(this.formattedTimeLeft());
+                }
+            }
+            if (this.mulch !== MulchType.None) {
+                const mulchTime = this.formattedMulchTimeLeft();
+                timeTooltip.push(`${mulchTime}`);
+            }
+            return timeTooltip.join('<br/>');
         });
 
         this.notifications = [];
@@ -319,7 +338,7 @@ class Plot implements Saveable {
 
             // Checking for Petaya Berries
             if (App.game.farming.berryInFarm(BerryType.Petaya, PlotStage.Berry, true) && this.berry !== BerryType.Petaya) {
-                this.age = Math.min(this.age, this.berryData.growthTime[3]);
+                this.age = Math.min(this.age, this.berryData.growthTime[3] + 1);
             }
 
             const updatedStage = this.stageUpdated(oldAge, this.age);
@@ -333,12 +352,12 @@ class Plot implements Saveable {
                 change = true;
             }
 
-            if (!this._hasWarnedAboutToWither && this.age + 15 >= this.berryData.growthTime[4]) {
+            if (!this._hasWarnedAboutToWither && this.age + 15 > this.berryData.growthTime[4]) {
                 this.notifications.push(FarmNotificationType.AboutToWither);
                 this._hasWarnedAboutToWither = true;
             }
 
-            if (this.age >= this.berryData.growthTime[4]) {
+            if (this.age > this.berryData.growthTime[4]) {
                 this.die();
                 change = true;
             }
@@ -469,8 +488,7 @@ class Plot implements Saveable {
                     createLogContent.wildWander({ pokemon : wanderer.name })
                 );
             }
-            const pokemon = PokemonHelper.getPokemonByName(wanderer.name);
-            PokemonHelper.incrementPokemonStatistics(pokemon.id, GameConstants.PokemonStatisticsType.Encountered, wanderer.shiny, wanderer.gender, GameConstants.ShadowStatus.None);
+
             return wanderer;
         }
         return undefined;

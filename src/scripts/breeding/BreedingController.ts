@@ -219,6 +219,17 @@ class BreedingController {
 
     private static resetFilteredListNotifier = ko.observable(null);
 
+    public static quickAddMaxPokemon() {
+        const hatcheryList = Array.from(BreedingController.hatcherySortedFilteredList());
+        const availableSlots = App.game.breeding.usableQueueSlots() - App.game.breeding.queueList.length;
+        for (let i = 0; i < availableSlots; i++) {
+            if (i >= hatcheryList.length) {
+                return;
+            }
+            App.game.breeding.addPokemonToHatchery(hatcheryList[i]);
+        }
+    }
+
     private static resetHatcheryView() {
         BreedingController.scrollToTop();
         BreedingController.resetHatcheryFlag.notifySubscribers();

@@ -192,7 +192,7 @@ class HatcheryHelpers {
         return this.requirement.isCompleted();
     }
 
-    public addSteps(amount: number, multiplier: Multiplier): void {
+    public addSteps(amount: number, multiplier: Multiplier, keepProcessing = false): void {
         // Add steps and attack based on efficiency
         this.hired().forEach((helper, index) => {
             // Calculate how many steps should be applied
@@ -213,7 +213,7 @@ class HatcheryHelpers {
             }
 
             // Check if egg slot empty
-            if (egg.isNone()) {
+            if (keepProcessing && egg.isNone()) {
                 // Check if there's a pokemon we can chuck into an egg
                 const regionalAttackDebuff = App.game.challenges.list.regionalAttackDebuff.active() ? Settings.getSetting('breedingRegionalAttackDebuffSetting').value : GameConstants.Region.none;
                 const compare = PartyController.compareBy(helper.sortOption(), helper.sortDirection(), regionalAttackDebuff);

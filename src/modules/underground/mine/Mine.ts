@@ -183,11 +183,8 @@ export class Mine {
     }
 
     public tick(deltaTime: number) {
-        if (!this.completed && this.timeUntilDiscovery > 0) {
+        if (!this.completed) {
             this._timeUntilDiscovery(this.timeUntilDiscovery - deltaTime);
-            if (this.timeUntilDiscovery <= 0) {
-                UndergroundController.notifyMineFound();
-            }
         }
     }
 

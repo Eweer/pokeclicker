@@ -4,24 +4,50 @@
         <div class="card-header p-0" data-toggle="collapse" href="#mapBody">
             <span data-bind="text: `Town Map (${GameConstants.camelCaseToString(GameConstants.Region[player.region])})`">Town Map</span>
         </div>
-        <button class='btn btn-sm' style="position: absolute; left: 0px; top: 0px; width: auto; height: 41px;" data-toggle="popover" data-trigger="hover" data-html="true" data-title="Map Legend:"
-        data-content=""
-        data-placement="bottom" data-bind="attr: {'data-content': `<div class='row map-legend'>
-                <div class='col-12'>
-                    Map locations will be coloured based on the following:
-                </div>
-                ${MapHelper.getUsableFilters().map(setting => {
-                    return `<div class='col-10 legend-item ${setting.name}'>
-                        <span>${setting.displayName}:</span>
+        <div style="position: absolute; left: 0px; top: 0px; display: flex; gap: 4px;">
+            <button class='btn btn-sm' style="width: auto; height: 41px;" data-toggle="popover" data-trigger="hover" data-html="true" data-title="Map Legend:"
+            data-content=""
+            data-placement="bottom" data-bind="attr: {'data-content': `<div class='row map-legend'>
+                    <div class='col-12'>
+                        Map locations will be coloured based on the following:
                     </div>
-                    <div class='col-2'>
-                        <span class='float-right px-4 bg-${setting.name.substring(2)}'>&nbsp;</span>
-                    </div>`
-                }).join('\n')}
-                <div class='col-12'>
-                    <i>NOTE: Colors and priority can be customized in the settings menu</i>
-                </div>
-            </div>`}">ⓘ</button>
+                    ${MapHelper.getUsableFilters().map(setting => {
+                        return `<div class='col-10 legend-item ${setting.name}'>
+                            <span>${setting.displayName}:</span>
+                        </div>
+                        <div class='col-2'>
+                            <span class='float-right px-4 bg-${setting.name.substring(2)}'>&nbsp;</span>
+                        </div>`
+                    }).join('\n')}
+                    <div class='col-12'>
+                        <i>NOTE: Colors and priority can be customized in the settings menu</i>
+                    </div>
+                </div>`}">ⓘ</button>
+            <button class='btn btn-sm' style="width: auto; height: 41px;"
+                data-bind="
+                    css: { 'btn-success': (Battle.isAutoClicking?.() || Battle.shouldAutoClick?.()) ?? false, 'btn-secondary': !(Battle.isAutoClicking?.() ?? false) },
+                    click: () => Battle.toggleAutoClick(),
+                    tooltip: { title: 'Toggle Auto Click', placement: 'bottom', trigger: 'hover' }">
+                ⚔️🗺️
+            </button>
+            <button class='btn btn-sm' style="height: 41px;"
+                data-bind="
+                    css: { 'btn-success': (GymBattle.isAutoClicking?.() || GymBattle.shouldAutoClick?.()) ?? false, 'btn-secondary': !(GymBattle.isAutoClicking?.() ?? false) },
+                    click: () => GymBattle.toggleAutoClick(),
+                    tooltip: { title: 'Toggle Auto Click', placement: 'bottom', trigger: 'hover' }">
+                ⚔️🏋🏻
+            </button>
+            <button class='btn btn-sm' style="height: 41px;"
+                data-bind="
+                    css: {
+                        'btn-success': DungeonRunner.isAutoInteracting(),
+                        'btn-secondary': !DungeonRunner.isAutoInteracting()
+                    },
+                    click: () => DungeonRunner.isAutoInteracting(!DungeonRunner.isAutoInteracting()),
+                    tooltip: { title: 'Toggle Auto Click', placement: 'bottom', trigger: 'hover' }">
+                ⚔️🦇
+            </button>
+        </div>
         <button class='btn btn-sm' style="position: absolute; right: 96px; top: 0px; width: auto; height: 41px; cursor: default;"
         data-bind='style: { background: DayCycle.color() },
             tooltip: {

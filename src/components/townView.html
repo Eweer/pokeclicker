@@ -129,15 +129,7 @@
         <!--Display all available Pokémon in this dungeon-->
         <ul class="list-inline mb-0">
           <!-- ko foreach: player.town.dungeon.normalEncounterList.filter(i => !i.hide) -->
-          <li class="list-inline-item" href="#pokemonStatisticsModal" data-toggle="modal" data-bind="
-                click: () => {
-                    if (!$data.uncaught && $data.pokemonName) {
-                        App.game.statistics.selectedPokemonID($data.id);
-                    } else {
-                        event.stopPropagation();
-                    }
-                },
-                css: { 'clickable': !$data.uncaught && $data.pokemonName }">
+          <li class="list-inline-item">
             <!-- ko if: $data.mimic -->
             <img class="boss" data-bind="attr: { src: `assets/images/dungeons/chest-${$data.mimicTier}.png` }, tooltip: {
                 title: GameConstants.camelCaseToString($data.mimicTier),
@@ -170,15 +162,7 @@
           <!-- /ko -->
           <!--Display all available bosses in this dungeon-->
           <!-- ko foreach: player.town.dungeon.bossEncounterList.filter(i => !i.hide) -->
-          <li class="list-inline-item" href="#pokemonStatisticsModal" data-toggle="modal" data-bind="
-                click: () => {
-                    if (!$data.uncaught && $data.pokemonName) {
-                        App.game.statistics.selectedPokemonID($data.id);
-                    } else {
-                        event.stopPropagation();
-                    }
-                },
-                css: { 'clickable': !$data.uncaught && $data.pokemonName }">
+          <li class="list-inline-item">
             <!-- ko ifnot: $data.shadow -->
             <img class="boss" src="assets/images/dungeons/boss.svg"/>
             <!-- /ko -->

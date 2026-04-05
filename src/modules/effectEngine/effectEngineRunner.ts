@@ -51,6 +51,10 @@ export default class EffectEngineRunner {
         this.multIndex((this.multIndex() + this.multipliers.length - 1) % this.multipliers.length);
     }
 
+    public static setMaxMultiplier() {
+        this.multIndex(this.multipliers.length - 1);
+    }
+
     public static getEffect(itemName: string) {
         if (!player) {
             return 0;

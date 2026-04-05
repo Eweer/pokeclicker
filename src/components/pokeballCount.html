@@ -1,0 +1,31 @@
+<div id="pokeballCount" class="card sortable border-secondary mb-3" data-bind="visible: player.regionStarters[GameConstants.Region.kanto]() != GameConstants.Starter.None">
+    <div class="card-header p-0" data-toggle="collapse" href="#pokeballCountBody">
+        <span>Poké Balls</span>
+    </div>
+    <table class="table table-bordered m-0">
+        <tbody>
+            <!-- ko foreach: GameHelper.chunk(5, App.game.pokeballs.pokeballs) -->
+            <tr data-bind="foreach: $data">
+                <td class="amount p-0" data-bind="
+                    text: GameHelper.formatAmount($data.quantity()),
+                    tooltip: {
+                        title: ItemList[GameConstants.Pokeball[$data.type]].displayName + ': ' + $data.quantity().toLocaleString('en-US'),
+                        trigger: 'hover',
+                        animation: false,
+                        html: true
+                    }"></td>
+            </tr>
+            <tr data-bind="foreach: $data">
+                <td class="p-0" data-bind="tooltip: {
+                    title: '<strong>' + ItemList[GameConstants.Pokeball[$data.type]].displayName + '</strong>' + '<br/>' + $data.description + '<br/>' + 'Catch Time: ' + $data.catchTime / 1000 + 's',
+                    trigger: 'hover',
+                    placement: $(window).innerWidth < 768 ? 'bottom' : 'left',
+                    html: true
+                }">
+                    <img class="pokeball-small" data-bind="attr: { src: 'assets/images/pokeball/' + GameConstants.Pokeball[$data.type] + '.svg' },css: { 'pokeball-selected': $data.quantity() > 0 }" width="26px">
+                </td>
+            </tr>
+            <!-- /ko -->
+        </tbody>
+    </table>
+</div>

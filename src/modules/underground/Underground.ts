@@ -12,6 +12,7 @@ import { BASE_EXTRA_LAYER_DEPTH,
     BASE_MAXIMUM_ITEMS, BASE_MINE_HEIGHT, BASE_MINE_WIDTH, BASE_MINIMUM_ITEMS, BASE_MINIMUM_LAYER_DEPTH } from '../GameConstants';
 import UndergroundTools from './tools/UndergroundTools';
 import { UndergroundBattery } from './UndergroundBattery';
+import UndergroundToolType from './tools/UndergroundToolType';
 
 export class Underground implements Feature {
     name = 'Underground';
@@ -28,6 +29,9 @@ export class Underground implements Feature {
         (Underground.convertLevelToExperience(this._undergroundLevel() + 1) - Underground.convertLevelToExperience(this._undergroundLevel())));
 
     private _autoSearchMineType: Observable<MineType> = ko.observable(MineType.Random);
+
+
+    public autoSwapTool: KnockoutObservable<boolean> = ko.observable(true);
 
     private _mine: Observable<Mine | null> = ko.observable(null);
     public helpers = new UndergroundHelpers();
@@ -48,6 +52,18 @@ export class Underground implements Feature {
         this.helpers?.hired().forEach(helper => helper.tick(delta));
         this.tools.update(delta);
         this.battery.update(delta);
+        if (this.autoSwapTool() && this._mine != null) {
+            if (this._mine().itemsPartiallyFound === this._mine().itemsBuried) {
+                this.tools.selectedToolType = UndergroundToolType.Hammer;
+            }
+        }
+    }
+
+    public toggleAutoSwapTool() {
+        if (this.tools.getTool(UndergroundToolType.Bomb).durabilityPerUse === 0 &&
+                this.tools.getTool(UndergroundToolType.Hammer).durabilityPerUse === 0) {
+            this.autoSwapTool(!this.autoSwapTool());
+        }
     }
 
     public generateMine(mineType: MineType, helper: UndergroundHelper = undefined) {
@@ -67,6 +83,10 @@ export class Underground implements Feature {
         mine.generate();
 
         this._mine(mine);
+
+        if (this.autoSwapTool() && this._mine != null) {
+            this.tools.selectedToolType = UndergroundToolType.Bomb;
+        }
     }
 
     public addUndergroundExp(amount: number) {

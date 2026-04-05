@@ -8,7 +8,6 @@ class WandererPokemon {
         public name: PokemonNameType,
         public berry: BerryType,
         public catchRate: number,
-        public gender: GameConstants.BattlePokemonGender,
         public shiny = false,
         distractTime = 0
     ) {
@@ -37,7 +36,7 @@ class WandererPokemon {
 
     public static fromJSON(wanderer: any): WandererPokemon {
         if (wanderer) {
-            return new WandererPokemon(wanderer.name, wanderer.berry, wanderer.catchRate, wanderer.gender, wanderer.shiny, wanderer.distractTime);
+            return new WandererPokemon(wanderer.name, wanderer.berry, wanderer.catchRate, wanderer.shiny, wanderer.distractTime);
         }
         return undefined;
     }

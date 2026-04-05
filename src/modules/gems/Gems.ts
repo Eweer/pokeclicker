@@ -66,6 +66,24 @@ export default class Gems implements Feature {
         }
     }
 
+    public getCostForMaxUpgrades(typeNum: PokemonType): number {
+        const remainingUpgrades = [...Array(Gems.nEffects).keys()].filter((effectNum) =>
+            this.isValidUpgrade(typeNum, effectNum) && !this.hasMaxUpgrade(typeNum, effectNum)
+        );
+        if (remainingUpgrades.length <= 0) {
+            return 0;
+        }
+
+        let cost = 0;
+        for (const effectNum of remainingUpgrades) {
+            const currentIdx = this.gemUpgrades[typeNum * Gems.nEffects + effectNum]();
+            for (let level = currentIdx; level < MAX_GEM_UPGRADES; level++) {
+                cost += (level + 1) * GEM_UPGRADE_COST;
+            }
+        }
+        return cost;
+    }
+
     public getGemUpgradeCost(
         typeNum: PokemonType,
         effectNum: TypeEffectiveness,
@@ -86,6 +104,9 @@ export default class Gems implements Feature {
         effectNum: TypeEffectiveness,
     ): boolean {
         if (App.game.challenges.list.disableGems.active()) {
+            return false;
+        }
+        if (!this.isValidUpgrade(typeNum, effectNum)) {
             return false;
         }
         const lessThanMax = !this.hasMaxUpgrade(typeNum, effectNum);
@@ -117,11 +138,32 @@ export default class Gems implements Feature {
         return this.gemUpgrades[typeNum * Gems.nEffects + effectNum]();
     }
 
+    public upgradeByCost(typeNum: PokemonType, ascending: boolean): void {
+        let purchased = true;
+        while (purchased) {
+            purchased = false;
+
+            const bestEffect = [...Array(Gems.nEffects).keys()]
+                .filter((effectNum) => this.canBuyGemUpgrade(typeNum, effectNum))
+                .sort((a, b) => ascending
+                    ? this.getGemUpgradeCost(typeNum, a) - this.getGemUpgradeCost(typeNum, b)
+                    : this.getGemUpgradeCost(typeNum, b) - this.getGemUpgradeCost(typeNum, a))[0];
+
+            if (bestEffect !== undefined) {
+                this.buyGemUpgrade(typeNum, bestEffect);
+                purchased = true;
+            }
+        }
+    }
+
     initialize() {}
 
     canAccess(): boolean {
         return App.game.keyItems.hasKeyItem(KeyItemType.Gem_case);
     }
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    update(delta: number) {}
 
     toJSON(): Record<string, any> {
         return {

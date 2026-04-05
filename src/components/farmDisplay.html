@@ -2,26 +2,40 @@
     <div class="card-header p-0" data-toggle="collapse" href="#plotListCard">
         <span>Farm</span>
     </div>
-    <button class='btn btn-sm btn-primary' style="position: absolute; right: 0px; top: 0px; width: auto; height: 41px;" onclick="FarmController.openFarmModal()">
-        View
-    </button>
-    <!-- ko if: Settings.getSetting('showFarmModule').observableValue() === 'limited' -->
-    <div class="dropdown" style="position: absolute; left: 0px; top: 0px;">
-        <button class='btn btn-sm btn-primary dropdown-toggle dropdown-toggle-no-arrow' style="width: auto; height: 41px;" data-toggle="dropdown"
-            data-bind="tooltip: {title: App.game.farming.unlockedBerries[FarmController.selectedBerry()]() ? BerryType[FarmController.selectedBerry()] : '???', trigger: 'hover', placement: 'right'}">
-            <img src="" alt="selected berry image" height="28px" data-bind="attr:{ src: FarmController.getBerryImage(FarmController.selectedBerry()) },
-                css: {'berryLocked': !App.game.farming.unlockedBerries[FarmController.selectedBerry()]() }">
+    <div style="position: absolute; right: 0px; top: 0px; display: flex; gap: 4px;">
+        <!-- ko if: Settings.getSetting('showFarmModule').observableValue() === 'limited' -->
+        <button class="btn btn-primary btn-block" style="width: auto; height: 41px; padding: 4px;"
+            data-bind="click: function(){App.game.farming.plantAll(FarmController.selectedBerry())}">
+            Plant All
         </button>
-        <div class="dropdown-menu" style="max-height: 275px; overflow-y: auto;"
-            data-bind="foreach: GameHelper.enumNumbers(BerryType).filter(b => App.game.farming.unlockedBerries[b]?.())">
-            <button class="dropdown-item d-flex small px-3" type="button"
-                data-bind="click: () => FarmController.selectedBerry($data), css: { 'active': FarmController.selectedBerry() === $data }">
-                <knockout class="flex-grow-1" data-bind="text: BerryType[$data]"></knockout>
-                <knockout data-bind="text: App.game.farming.berryList[$data]() >= 1e6
-                    ? GameConstants.formatNumber(App.game.farming.berryList[$data]())
-                    : App.game.farming.berryList[$data]().toLocaleString('en-US')"></knockout>
+        <!-- /ko -->
+        <button class='btn btn-sm btn-primary' style="width: auto; height: 41px;" onclick="FarmController.openFarmModal()">
+            View
+        </button>
+    </div>
+    <!-- ko if: Settings.getSetting('showFarmModule').observableValue() === 'limited' -->
+    <div style="position: absolute; left: 0px; top: 0px; display: flex; gap: 4px;">
+        <div class="dropdown">
+            <button class='btn btn-sm btn-primary dropdown-toggle dropdown-toggle-no-arrow' style="width: auto; height: 41px;" data-toggle="dropdown"
+                data-bind="tooltip: {title: App.game.farming.unlockedBerries[FarmController.selectedBerry()]() ? BerryType[FarmController.selectedBerry()] : '???', trigger: 'hover', placement: 'right'}">
+                <img src="" alt="selected berry image" height="28px" data-bind="attr:{ src: FarmController.getBerryImage(FarmController.selectedBerry()) },
+                    css: {'berryLocked': !App.game.farming.unlockedBerries[FarmController.selectedBerry()]() }">
             </button>
+            <div class="dropdown-menu" style="max-height: 275px; overflow-y: auto;"
+                data-bind="foreach: GameHelper.enumNumbers(BerryType).filter(b => App.game.farming.unlockedBerries[b]?.())">
+                <button class="dropdown-item d-flex small px-3" type="button"
+                    data-bind="click: () => FarmController.selectedBerry($data), css: { 'active': FarmController.selectedBerry() === $data }">
+                    <knockout class="flex-grow-1" data-bind="text: BerryType[$data]"></knockout>
+                    <knockout data-bind="text: App.game.farming.berryList[$data]() >= 1e6
+                        ? GameConstants.formatNumber(App.game.farming.berryList[$data]())
+                        : App.game.farming.berryList[$data]().toLocaleString('en-US')"></knockout>
+                </button>
+            </div>
         </div>
+        <button class="btn btn-primary btn-block" style="width: auto; height: 41px; padding: 4px;"
+            data-bind="click: function(){App.game.farming.harvestAll()}">
+            Harvest
+        </button>
     </div>
     <!-- /ko -->
     <div id="plotListCard" class="card-body p-0 px-2 show" data-bind="css: { ShiftPressed: GameController.keyHeld.Shift() }">
@@ -128,6 +142,32 @@
             </div>
         </div>
       </div>
+      <div class="row py-0 mt-1">
+        <div class="col-3 px-1">
+            <button class="btn btn-primary p-0" style="width: 100%; height: 28px;"
+                    data-bind="click: function(){App.game.farming.harvestAll()}">
+                Harvest
+            </button>
+        </div>
+        <div class="col-3 px-1">
+            <button class="btn btn-primary p-0" style="width: 100%; height: 28px;"
+                    data-bind="click: function(){App.game.farming.plantAll(FarmController.selectedBerry())}">
+                Plant
+            </button>
+        </div>
+        <div class="col-3 px-1">
+            <button class="btn btn-primary p-0" style="width: 100%; height: 28px;"
+                    data-bind="click: function(){ FarmController.mulchAll(); }">
+                Mulch
+            </button>
+        </div>
+        <div class="col-3 px-1">
+            <button class="btn btn-primary p-0" style="width: 100%; height: 28px;"
+                    data-bind="click: function(){ App.game.farming.catchAllWanderers(); }">
+                Catch
+            </button>
+        </div>
+      </div>
       <!-- /ko -->
 
       <div class="row py-1" data-bind="foreach: App.game.farming.plotList">
@@ -162,12 +202,33 @@
                             <!-- /ko -->
                         <!-- /ko -->
                         <div class="plotButton"
-                        data-bind="ifnot: $data.isEmpty(),
-                        click: function(data, event){FarmController.plotClickMini($index(), event)},
-                        tooltip: {title: $data.tooltip(), trigger: 'hover', animation: false, html: true}">
-                        <img width="100%" height="100%" src=""
-                            style="width: 68.75%; max-height: 100%; image-rendering: pixelated;"
-                            data-bind="attr:{ src: FarmController.getImage($index())}">
+                                style="position: absolute"
+                                data-bind="ifnot: $data.isEmpty(),
+                                                event: {
+                                                    mousedown: function(data, event) { FarmController.plotClickMini($index(), event)},
+                                                    conextmenu: function(data, event) { event.preventDefault(); return false; }
+                                                },
+                                                tooltip: {title: $data.tooltip(), trigger: 'hover', animation: false, html: true}">
+                            <img width="100%" height="100%" src=""
+                                style="width: 68.75%; max-height: 100%; image-rendering: pixelated;"
+                                data-bind="attr:{ src: FarmController.getImage($index())}">
+                            <!-- ko ifnot: $data.isEmpty() -->
+                            <span style="
+                                    position: absolute;
+                                    top: 2px;
+                                    left: 50%;
+                                    z-index: 10;
+                                    transform: translateX(-50%);
+                                    color: white;
+                                    font-size: 0.55rem;
+                                    line-height: 1;
+                                    font-weight: bold;
+                                    text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+                                    pointer-events: none;
+                                "
+                                data-bind="html: $data.timeTooltip()"
+                            >1</span>
+                            <!-- /ko -->
                         </div>
                     <!-- /ko -->
                     <!-- ko if: $data.isSafeLocked -->

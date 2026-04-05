@@ -28,8 +28,26 @@ export default class ItemHandler {
         return result ?? true;
     }
 
+    public static useAllBattleItems() {
+        let BattleItemList = Object.keys(ItemList).filter(i=>(ItemList[i].constructor.name == 'BattleItem' && ItemList[i].isUseableNoNotification()));
+
+        Object.values(BattleItemList).forEach((itemName) => {
+            this.useItem(itemName, Infinity);
+        });
+    }
+
     public static hasItem(name: string): boolean {
         return player.itemList[name] ? !!player.itemList[name]() : false;
+    }
+
+    public static hasAny(): boolean {
+        let battleItemList = Object.keys(ItemList).filter(i=>(ItemList[i].constructor.name == 'BattleItem' && ItemList[i].isUseableNoNotification()));
+        for (const item of battleItemList) {
+            if (this.hasItem(item)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public static resetAmount() {
