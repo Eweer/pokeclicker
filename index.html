@@ -2898,6 +2898,7 @@ selectAllClick - (Optional) Function called when the Select All button is clicke
             <i>Note: there is no click damage in the Battle Frontier.</i>
         </p>
         <a class="btn btn-block btn-success text-light" onclick="BattleFrontierRunner.start(false)">Start</a>
+        <a class="btn btn-block btn-success text-light" onclick="App.game.battleFrontier.autoRestart(BattleFrontierRunner.hasCheckpoint())">Restart on loss</a>
         <!-- ko if: BattleFrontierRunner.hasCheckpoint() -->
             <a class="btn btn-block btn-success text-light" onclick="BattleFrontierRunner.start(true)">Start at latest checkpoint (Stage <knockout data-bind="text: BattleFrontierRunner.checkpoint().toLocaleString('en-US')">0</knockout>)</a>
         <!-- /ko -->
@@ -57069,6 +57070,12 @@ selectAllClick - (Optional) Function called when the Select All button is clicke
                     </div>
                     <!-- /ko -->
                     <!-- ko if: $data.isUnlocked -->
+                        <!-- ko if: $data.stage() >= PlotStage.Berry -->
+                        <img style="position: absolute; top: 0; left: 0; width: 100%;"
+                            src="assets/images/farm/soil_ripe.png"
+                            data-bind="style: { filter: FarmController.getRipeOverlayFilter($data) }"
+                            >
+                        <!-- /ko -->
                         <!-- ko if: $data.wanderer -->
                             <!-- ko ifnot: $data.wanderer.catching -->
                                 <div class="pokemonSprite wandererSprite"
