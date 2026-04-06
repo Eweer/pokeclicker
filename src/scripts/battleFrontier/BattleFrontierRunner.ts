@@ -8,6 +8,8 @@ class BattleFrontierRunner {
     public static highest: KnockoutObservable<number> = ko.observable(1);
     public static battleBackground: KnockoutObservable<GameConstants.BattleBackground> = ko.observable('Default');
 
+    public static autoRestartRunner: KnockoutObservable<boolean> = ko.observable(false);
+
     public static counter = 0;
 
     public static started = ko.observable(false);
@@ -79,6 +81,11 @@ class BattleFrontierRunner {
         this.started(false);
     }
 
+    public static restart() {
+        this.end();
+        this.start(false);
+    }
+
     public static battleLost() {
         // Current stage - 1 as the player didn't beat the current stage
         const stageBeaten = this.stage() - 1;
@@ -109,8 +116,11 @@ class BattleFrontierRunner {
         );
 
         this.checkpoint(1);
-
-        this.end();
+        if (this.autoRestartRunner()) {
+            this.restart();
+        } else {
+            this.end();
+        }
     }
     public static battleQuit() {
         Notifier.confirm({

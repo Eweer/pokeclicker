@@ -25,6 +25,11 @@ class BattleFrontier implements Feature {
         BattleFrontierRunner.start(useCheckpoint);
     }
 
+    public autoRestart(useCheckpoint: boolean): void {
+        BattleFrontierRunner.autoRestartRunner(true);
+        this.start(useCheckpoint);
+    }
+
     public leave(): void {
         // Put the user back in the town
         App.game.gameState = GameConstants.GameState.town;

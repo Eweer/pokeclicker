@@ -348,6 +348,14 @@ class FarmController {
         }
     }
 
+    public static getRipeOverlayFilter(plot: Plot) {
+        const growthTime = plot.berryData.growthTime.find(t => plot.age < t);
+        const timeLeft = growthTime - plot.age;
+        const ratio = Math.min(1, Math.max(0, timeLeft / plot.berryData.growthTime[PlotStage.Berry]));
+        const hue = Math.round(ratio * 120); // 120 = green, 0 = red
+        return `sepia(1) saturate(5) hue-rotate(${hue}deg)`;
+    }
+
     public static shortcutVisible: KnockoutComputed<boolean> = ko.pureComputed(() => {
         return App.game.farming.canAccess() && Settings.getSetting('showFarmModule').observableValue() === 'never';
     });

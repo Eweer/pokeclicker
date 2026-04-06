@@ -189,6 +189,12 @@
                     </div>
                     <!-- /ko -->
                     <!-- ko if: $data.isUnlocked -->
+                        <!-- ko if: $data.stage() >= PlotStage.Berry -->
+                        <img style="position: absolute; top: 0; left: 0; width: 100%;"
+                            src="assets/images/farm/soil_ripe.png"
+                            data-bind="style: { filter: FarmController.getRipeOverlayFilter($data) }"
+                            >
+                        <!-- /ko -->
                         <!-- ko if: $data.wanderer -->
                             <!-- ko ifnot: $data.wanderer.catching -->
                                 <div class="pokemonSprite wandererSprite"

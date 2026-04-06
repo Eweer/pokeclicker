@@ -16,6 +16,7 @@
             <i>Note: there is no click damage in the Battle Frontier.</i>
         </p>
         <a class="btn btn-block btn-success text-light" onclick="BattleFrontierRunner.start(false)">Start</a>
+        <a class="btn btn-block btn-success text-light" onclick="App.game.battleFrontier.autoRestart(BattleFrontierRunner.hasCheckpoint())">Restart on loss</a>
         <!-- ko if: BattleFrontierRunner.hasCheckpoint() -->
             <a class="btn btn-block btn-success text-light" onclick="BattleFrontierRunner.start(true)">Start at latest checkpoint (Stage <knockout data-bind="text: BattleFrontierRunner.checkpoint().toLocaleString('en-US')">0</knockout>)</a>
         <!-- /ko -->
