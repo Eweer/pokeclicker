@@ -116,10 +116,21 @@ export default class Weather {
         ],
     };
 
+
     /**
      * The period for Weather changes (in hours)
      */
     public static period = 4;
+
+    public static getPossibleWeathersInCurrentRegion() {
+        // If no distribution set, assume all weather available
+        const dist = Weather.weatherDistribution[player.region] || GameHelper.enumNumbers(WeatherType);
+        let result = [];
+        for (let d of dist) {
+            result.push(this.weatherConditions[d as WeatherType]);
+        }
+        return result;
+    }
 
     /**
      * Generates the current Weather condition

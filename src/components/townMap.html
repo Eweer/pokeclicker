@@ -77,14 +77,14 @@
                     <img width=30px src="" data-bind="attr: { src: Weather.image() }"/>
                 </button>
                 <div class="dropdown-menu" style="width: max-content; min-width: unset; padding: 0; border: none; margin-top: 0;">
-                    <!-- ko foreach: Object.entries(Weather.weatherConditions) -->
-                    <!-- ko if: Weather.currentWeather() !== ($data[0] | 0) -->
+                    <!-- ko foreach: Weather.getPossibleWeathersInCurrentRegion() -->
+                    <!-- ko if: Weather.currentWeather() !== $data.type -->
                     <a class="dropdown-item d-flex align-items-center" href="#"
                         data-bind="
-                            click: () => Weather.regionalWeather[player.region]($data[0] | 0),
-                            style: { background: $data[1].color, color: '#333333' }">
-                        <img width=24px data-bind="attr: { src: `assets/images/weather/${$data[1].type !== undefined ? WeatherType[$data[1].type] : WeatherType[$data[0] | 0]}.png` }" style="margin-right: 14px; margin-left: -8px; flex-shrink: 0;"/>
-                        <span style="white-space: nowrap;" data-bind="text: WeatherType[$data[0] | 0].replace(/_/g, ' ')"></span>
+                            click: () => Weather.regionalWeather[player.region]($data.type),
+                            style: { background: $data.color, color: '#333333' }">
+                        <img width=24px data-bind="attr: { src: `assets/images/weather/${WeatherType[$data.type]}.png` }" style="margin-right: 14px; margin-left: -8px; flex-shrink: 0;"/>
+                        <span style="white-space: nowrap;" data-bind="text: WeatherType[$data.type].replace(/_/g, ' ')"></span>
                     </a>
                     <!-- /ko -->
                     <!-- /ko -->
