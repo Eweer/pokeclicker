@@ -1,3 +1,8 @@
+<style>
+    #weather-manual-override .dropdown-item:hover { color: #ffffff !important; }
+    #weather-manual-override .dropdown-item:hover img { filter: brightness(0) invert(1) !important; }
+</style>
+
 <div id="middle-bottom-sort-column">
     <div id="townMap" class="card sortable border-secondary mb-3" data-bind="visible: App.game.keyItems.hasKeyItem(KeyItemType.Town_map) && (App.game.gameState === GameConstants.GameState.fighting || App.game.gameState === GameConstants.GameState.gym || App.game.gameState === GameConstants.GameState.town||
         App.game.gameState === GameConstants.GameState.shop || App.game.gameState === GameConstants.GameState.farm || App.game.gameState === GameConstants.GameState.temporaryBattle || App.game.gameState === GameConstants.GameState.paused)">
@@ -27,14 +32,14 @@
                 data-bind="
                     css: { 'btn-success': (Battle.isAutoClicking?.() || Battle.shouldAutoClick?.()) ?? false, 'btn-secondary': !(Battle.isAutoClicking?.() ?? false) },
                     click: () => Battle.toggleAutoClick(),
-                    tooltip: { title: 'Toggle Auto Click', placement: 'bottom', trigger: 'hover' }">
+                    tooltip: { title: 'Toggle route battler auto click', placement: 'bottom', trigger: 'hover' }">
                 ⚔️🗺️
             </button>
             <button class='btn btn-sm' style="height: 41px;"
                 data-bind="
                     css: { 'btn-success': (GymBattle.isAutoClicking?.() || GymBattle.shouldAutoClick?.()) ?? false, 'btn-secondary': !(GymBattle.isAutoClicking?.() ?? false) },
                     click: () => GymBattle.toggleAutoClick(),
-                    tooltip: { title: 'Toggle Auto Click', placement: 'bottom', trigger: 'hover' }">
+                    tooltip: { title: 'Toggle gym auto alick', placement: 'bottom', trigger: 'hover' }">
                 ⚔️🏋🏻
             </button>
             <button class='btn btn-sm' style="height: 41px;"
@@ -44,40 +49,58 @@
                         'btn-secondary': !DungeonRunner.isAutoInteracting()
                     },
                     click: () => DungeonRunner.isAutoInteracting(!DungeonRunner.isAutoInteracting()),
-                    tooltip: { title: 'Toggle Auto Click', placement: 'bottom', trigger: 'hover' }">
+                    tooltip: { title: 'Toggle dungeon auto click', placement: 'bottom', trigger: 'hover' }">
                 ⚔️🦇
             </button>
         </div>
-        <button class='btn btn-sm' style="position: absolute; right: 96px; top: 0px; width: auto; height: 41px; cursor: default;"
-        data-bind='style: { background: DayCycle.color() },
-            tooltip: {
-                title: DayCycle.tooltip(),
-                html: true,
-                placement: "bottom",
-                trigger: "hover"
-            }'>
-            <img width=30px src="" data-bind="attr: { src: DayCycle.image() }"/>
-        </button>
-        <button class='btn btn-sm' style="position: absolute; right: 48px; top: 0px; width: auto; height: 41px; cursor: default;"
-        data-bind='style: { background: Weather.color() },
-            tooltip: {
-                title: Weather.tooltip(),
-                html: true,
-                placement: "bottom",
-                trigger: "hover"
-            }'>
-            <img width=30px src="" data-bind="attr: { src: Weather.image() }"/>
-        </button>
-        <button class='btn btn-sm' style="position: absolute; right: 0px; top: 0px; width: auto; height: 41px;" data-toggle="modal" data-target="#moonPhaseModal"
-            data-bind='style: { background: MoonCycle.color() },
+        <div id="weather-manual-override" style="position: absolute; right: 1px; top: 0px; display: flex; gap: 1px;">
+            <button class='btn btn-sm' style="width: auto; height: 41px; cursor: default;"
+            data-bind='style: { background: DayCycle.color() },
                 tooltip: {
-                    title: `${MoonCycle.tooltip()}<br/><br/>Click for more information.`,
+                    title: DayCycle.tooltip(),
                     html: true,
                     placement: "bottom",
                     trigger: "hover"
                 }'>
-            <img width=30px src="" data-bind="attr: { src: MoonCycle.image() }"/>
-        </button>
+                <img width=30px src="" data-bind="attr: { src: DayCycle.image() }"/>
+            </button>
+            <div class="dropdown">
+                <button class='btn btn-sm dropdown-toggle' style="width: auto; height: 41px;"
+                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                data-bind='style: { background: Weather.color() },
+                    tooltip: {
+                        title: Weather.tooltip(),
+                        html: true,
+                        placement: "top",
+                        trigger: "hover"
+                    }'>
+                    <img width=30px src="" data-bind="attr: { src: Weather.image() }"/>
+                </button>
+                <div class="dropdown-menu" style="width: max-content; min-width: unset; padding: 0; border: none; margin-top: 0;">
+                    <!-- ko foreach: Object.entries(Weather.weatherConditions) -->
+                    <!-- ko if: Weather.currentWeather() !== ($data[0] | 0) -->
+                    <a class="dropdown-item d-flex align-items-center" href="#"
+                        data-bind="
+                            click: () => Weather.regionalWeather[player.region]($data[0] | 0),
+                            style: { background: $data[1].color, color: '#333333' }">
+                        <img width=24px data-bind="attr: { src: `assets/images/weather/${$data[1].type !== undefined ? WeatherType[$data[1].type] : WeatherType[$data[0] | 0]}.png` }" style="margin-right: 14px; margin-left: -8px; flex-shrink: 0;"/>
+                        <span style="white-space: nowrap;" data-bind="text: WeatherType[$data[0] | 0].replace(/_/g, ' ')"></span>
+                    </a>
+                    <!-- /ko -->
+                    <!-- /ko -->
+                </div>
+            </div>
+            <button class='btn btn-sm' style="width: auto; height: 41px;" data-toggle="modal" data-target="#moonPhaseModal"
+                data-bind='style: { background: MoonCycle.color() },
+                    tooltip: {
+                        title: `${MoonCycle.tooltip()}<br/><br/>Click for more information.`,
+                        html: true,
+                        placement: "bottom",
+                        trigger: "hover"
+                    }'>
+                <img width=30px src="" data-bind="attr: { src: MoonCycle.image() }"/>
+            </button>
+        </div>
         <div id="mapBody" class="card-body p-0 show">
             <div id="subregion-travel-buttons" class="btn-group mr-2" role="group" style="width: 100%;" data-bind="
                 visible: SubRegions.getSubRegions(player.region).filter(sr => sr.unlocked()).length > 1,
