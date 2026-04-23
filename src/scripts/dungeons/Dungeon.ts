@@ -481,6 +481,15 @@ class Dungeon {
         return encounterInfo;
     }
 
+    get allEncounterGrid(): EncounterInfo[] {
+        const normalEncounters = this.normalEncounterList;
+        const bossEncounters = this.bossEncounterList;
+        const encounterInfo = normalEncounters.concat(bossEncounters);
+
+
+        return encounterInfo
+    }
+
     get difficulty(): GameConstants.Region {
         return this.optionalParameters?.dungeonRegionalDifficulty ?? GameConstants.getDungeonRegion(this.name);
     }

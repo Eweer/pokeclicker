@@ -28,6 +28,11 @@ class PokedexHelper {
         return `linear-gradient(90deg,${GameConstants.TypeColor[pokemon.type1]} 50%, ${GameConstants.TypeColor[pokemon.type2]} 50%)`;
     }
 
+    public static pokemonSeenByName(name: PokemonNameType): KnockoutComputed<boolean> {
+        const pokemon = PokemonHelper.getPokemonByName(name);
+        return this.pokemonSeen(pokemon.id);
+    }
+
     /**
      * Returns true if you have seen the pokemon
      * @param {number} id
