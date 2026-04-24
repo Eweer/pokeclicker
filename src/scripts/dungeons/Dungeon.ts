@@ -75,6 +75,7 @@ interface EncounterInfo {
     lock: boolean,
     lockMessage: string,
     pokemonName: PokemonNameType,
+    isBoss: boolean,
 }
 
 // Gain a gym badge after first completion of a dungeon
@@ -383,6 +384,7 @@ class Dungeon {
             shadow,
             shadowCaught,
             purified,
+            isBoss: false,
         };
         return encounter;
     }
@@ -454,6 +456,7 @@ class Dungeon {
                 const encounter = this.getEncounterInfo(boss.name, null, hideEncounter);
                 encounter.lock = lock;
                 encounter.lockMessage = lockMessage;
+                encounter.isBoss = true;
                 encounterInfo.push(encounter);
             // Handling Trainer
             } else {
@@ -482,12 +485,14 @@ class Dungeon {
     }
 
     get allEncounterGrid(): EncounterInfo[] {
-        const normalEncounters = this.normalEncounterList;
+        const encounterInfo = this.normalEncounterList;
         const bossEncounters = this.bossEncounterList;
-        const encounterInfo = normalEncounters.concat(bossEncounters);
-
-
-        return encounterInfo
+        for (let i = 0; i < bossEncounters.length; i++) {
+            const encounter = bossEncounters[i];
+            encounter.isBoss = true;
+            encounterInfo.push(encounter);
+        }
+        return encounterInfo;
     }
 
     get difficulty(): GameConstants.Region {

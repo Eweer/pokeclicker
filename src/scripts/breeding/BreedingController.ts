@@ -222,7 +222,7 @@ class BreedingController {
     public static quickAddMaxPokemon() {
         const hatcheryList = Array.from(BreedingController.hatcherySortedFilteredList());
         for (let i = 0; i < hatcheryList.length; i++) {
-            if (App.game.breeding.queueList.length >= App.game.breeding.usableQueueSlots()) {
+            if (App.game.breeding.queueList().length >= App.game.breeding.usableQueueSlots()) {
                 return;
             }
             if (!hatcheryList[i].isHatchable()) {

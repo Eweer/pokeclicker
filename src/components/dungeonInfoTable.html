@@ -1,6 +1,6 @@
 <div class="table-responsive">
-    <div style="overflow: auto;">
-        <table class="table table-sm m-0">
+    <div style="overflow: 100%;">
+        <table class="table table-sm m-0" style="width: 100%;">
             <thead>
                 <tr>
                     <th style="border-left: 2px solid #6c6c6c;">Pkmn</th>
@@ -9,10 +9,11 @@
                     <th colspan="2" style="border-right: 2px solid #6c6c6c;">Status</th>
                 </tr>
             </thead>
-            <tbody data-bind="foreach: { data: DungeonRunner.dungeon.allEncounterGrid.filter(i => !i.hide).filter((_, i) => i % 2 === 0), as: 'leftColumn' }">
+            <tbody data-bind="foreach: { data: DungeonRunner.dungeon.allEncounterGrid.filter(i => !i.hide && !i.shadowTrainer).filter((_, i) => i % 2 === 0), as: 'leftColumn' }">
                 <tr>
                     <!-- Left Pokémon -->
-                    <td class="text-center align-middle p-0" style="width: 48px; border-left: 2px solid #6c6c6c; border-right: none;"
+                    <td class="text-center align-middle p-0"
+                        style="position: relative; width: 48px; border-left: 2px solid #6c6c6c; border-right: none;"
                         data-bind="style: { background: PokedexHelper.getBackgroundColors($data.pokemonName) }">
                         <img style="width: 48px; height: 48px;"
                             data-bind="attr: { src: $data.image },
@@ -20,49 +21,60 @@
                                 'pokemon-not-seen': !PokedexHelper.pokemonSeenByName($data.pokemonName)(),
                                 'pokemon-seen-but-not-caught': $data.uncaught && PokedexHelper.pokemonSeenByName($data.pokemonName)()
                             }"/>
+                        <!-- ko if: $data.isBoss -->
+                        <img class="boss"
+                            style="position: absolute; bottom: 0; right: 0; width: 16px; height: 16 px"
+                            src="assets/images/dungeons/boss.svg"/>
+                        <!-- /ko -->
                     </td>
-                    <td class="text-center align-middle p-1" style="width: 32px; border-right: none;">
+                    <td class="text-center align-middle p-1" style="border-right: none;">
                         <img style="width: 18px; height: 18px;"
                             data-bind="visible: !$data.uncaught,
                             attr: { src: `assets/images/pokeball/Pokeball${$data.shiny ? '-shiny' : ''}.svg` }"/>
                         <span data-bind="visible: $data.uncaught">-</span>
                     </td>
-                    <td class="text-center align-middle p-1" style="width: 32px; border-right: 2px solid #6c6c6c;">
+                    <td class="text-center align-middle p-1" style="border-right: 2px solid #6c6c6c;">
                         <img style="width: 32px;"
-                            data-bind="visible: parseInt($data.EVs.replace('EVs: ', '')) >= GameConstants.Pokerus.Resistant,
+                            data-bind="visible: parseInt($data.EVs.replace('EVs: ', '')) >= 50,
                             attr: { src: $data.pkrsImage }"/>
-                        <span data-bind="visible: GameConstants.Pokerus.Resistant > parseInt($data.EVs.replace('EVs: ', '')) && $data.pkrsImage,
+                        <span data-bind="visible: 50 > parseInt($data.EVs.replace('EVs: ', '')) && $data.pkrsImage,
                             text: `${parseInt($data.EVs.replace('EVs: ', ''))}/50`"></span>
                         <span data-bind="visible: !$data.pkrsImage">-</span>
                     </td>
 
                     <!-- Right Pokémon -->
-                    <!-- ko with: DungeonRunner.dungeon.allEncounterGrid.filter(i => !i.hide)[$index() * 2 + 1] -->
-                    <td class="text-center align-middle p-0" style="width: 48px; border-left: 2px solid #6c6c6c; border-right: none;"
+                    <!-- ko with: DungeonRunner.dungeon.allEncounterGrid.filter(i => !i.hide && !i.shadowTrainer)[$index() * 2 + 1] -->
+                    <td class="text-center align-middle p-0"
+                        style="position: relative; width: 48px; border-left: 2px solid #6c6c6c; border-right: none;"
                         data-bind="style: { background: PokedexHelper.getBackgroundColors($data.pokemonName) }">
                         <img style="width: 48px; height: 48px;"
                             data-bind="attr: { src: $data.image },
-                                css: {
-                                    'pokemon-not-seen': !PokedexHelper.pokemonSeenByName($data.pokemonName)(),
-                                    'pokemon-seen-but-not-caught': $data.uncaught && PokedexHelper.pokemonSeenByName($data.pokemonName)()
-                                }"/>
+                            css: {
+                                'pokemon-not-seen': !PokedexHelper.pokemonSeenByName($data.pokemonName)(),
+                                'pokemon-seen-but-not-caught': $data.uncaught && PokedexHelper.pokemonSeenByName($data.pokemonName)()
+                            }"/>
+                        <!-- ko if: $data.isBoss -->
+                        <img class="boss"
+                            style="position: absolute; bottom: 0; right: 0; width: 16px; height: 16 px;"
+                            src="assets/images/dungeons/boss.svg"/>
+                        <!-- /ko -->
                     </td>
-                    <td class="text-center align-middle p-1" style="width: 32px; border-right: none;">
+                    <td class="text-center align-middle p-1" style="border-right: none;">
                         <img style="width: 18px; height: 18px;"
                             data-bind="visible: !$data.uncaught,
                             attr: { src: `assets/images/pokeball/Pokeball${$data.shiny ? '-shiny' : ''}.svg` }"/>
                         <span data-bind="visible: $data.uncaught">-</span>
                     </td>
-                    <td class="text-center align-middle p-1" style="width: 32px; border-right: 2px solid #6c6c6c;">
+                    <td class="text-center align-middle p-1" style="border-right: 2px solid #6c6c6c;">
                         <img style="width: 32px;"
-                            data-bind="visible: parseInt($data.EVs.replace('EVs: ', '')) >= GameConstants.Pokerus.Resistant,
+                            data-bind="visible: parseInt($data.EVs.replace('EVs: ', '')) >= 50,
                             attr: { src: $data.pkrsImage }"/>
-                        <span data-bind="visible: GameConstants.Pokerus.Resistant > parseInt($data.EVs.replace('EVs: ', '')) && $data.pkrsImage,
+                        <span data-bind="visible: 50 > parseInt($data.EVs.replace('EVs: ', '')) && $data.pkrsImage,
                             text: `${parseInt($data.EVs.replace('EVs: ', ''))}/50`"></span>
                         <span data-bind="visible: !$data.pkrsImage">-</span>
                     </td>
                     <!-- /ko -->
-                    <!-- ko ifnot: DungeonRunner.dungeon.allEncounterGrid.filter(i => !i.hide)[$index() * 2 + 1] -->
+                    <!-- ko ifnot: $data -->
                         <td colspan="3" style="border-left: 2px solid #6c6c6c; border-right: 2px solid #6c6c6c"></td>
                     <!-- /ko -->
                 </tr>
