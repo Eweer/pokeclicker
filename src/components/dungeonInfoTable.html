@@ -31,7 +31,8 @@
                         <img style="width: 18px; height: 18px;"
                             data-bind="visible: !$data.uncaught,
                             attr: { src: `assets/images/pokeball/Pokeball${$data.shiny ? '-shiny' : ''}.svg` }"/>
-                        <span data-bind="visible: $data.uncaught">-</span>
+                        <span data-bind="visible: $data.uncaught,
+                            text: `${PokemonFactory.catchRateHelper(PokemonHelper.getPokemonByName($data.pokemonName).catchRate)}%`"></span>
                     </td>
                     <td class="text-center align-middle p-1" style="border-right: 2px solid #6c6c6c;">
                         <img style="width: 32px;"
@@ -63,7 +64,8 @@
                         <img style="width: 18px; height: 18px;"
                             data-bind="visible: !$data.uncaught,
                             attr: { src: `assets/images/pokeball/Pokeball${$data.shiny ? '-shiny' : ''}.svg` }"/>
-                        <span data-bind="visible: $data.uncaught">-</span>
+                        <span data-bind="visible: $data.uncaught,
+                            text: `${PokemonFactory.catchRateHelper(PokemonHelper.getPokemonByName($data.pokemonName).catchRate)}%`"></span>
                     </td>
                     <td class="text-center align-middle p-1" style="border-right: 2px solid #6c6c6c;">
                         <img style="width: 32px;"
