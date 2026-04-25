@@ -1,10 +1,10 @@
 <div class="table-responsive">
-    <div style="overflow: auto;">
-        <table class="table table-sm m-0">
+    <div style="overflow: 100%;">
+        <table class="table table-sm m-0" style="width: 100%;">
             <thead>
                 <tr>
                     <th style="border-left: 2px solid #6c6c6c;">Pkmn</th>
-                    <th colspan="2" style="border-right: 2px solid #6c6c6c;">Status</th>
+                    <th style="border-right: 2px solid #6c6c6c;">Status</th>
                     <th style="border-left: 2px solid #6c6c6c;">Pkmn</th>
                     <th colspan="2" style="border-right: 2px solid #6c6c6c;">Status</th>
                 </tr>
@@ -12,20 +12,47 @@
             <tbody data-bind="foreach: { data: RouteHelper.getAvailablePokemonList(player.route, player.region, true).filter((_, i) => i % 2 === 0), as: 'leftName' }">
                 <tr data-bind="with: PokemonHelper.getPokemonByName(leftName)">
                     <!-- Left Pokémon -->
-                    <td class="text-center align-middle p-0" style="width: 48px; border-left: 2px solid #6c6c6c; border-right: none;"
-                        data-bind="style: { background: PokedexHelper.getBackgroundColors($data.name) }">
-                        <img style="width: 48px; height: 48px;"
-                            data-bind="attr: { src: PokemonHelper.getImage($data.id, undefined, undefined, GameConstants.ShadowStatus.None) },
-                                    css: {
-                                        'pokemon-not-seen': !PokedexHelper.pokemonSeen($data.id)(),
-                                        'pokemon-seen-but-not-caught': !App.game.party.alreadyCaughtPokemonByName($data.name) && PokedexHelper.pokemonSeen($data.id)()
-                                    }"/>
-                    </td>
-                    <td class="text-center align-middle p-1" style="width: 32px; border-right: none;">
-                        <img style="width: 18px; height: 18px;"
-                            data-bind="visible: App.game.party.alreadyCaughtPokemonByName($data.name),
-                                    attr: { src: `assets/images/pokeball/Pokeball${App.game.party.alreadyCaughtPokemon($data.id, true) ? '-shiny' : ''}.svg` }"/>
-                        <span data-bind="visible: !App.game.party.alreadyCaughtPokemonByName($data.name)">-</span>
+                    <td class="text-center align-middle p-0"
+                        style="position: relative; width: 64px; border-left: 2px solid #6c6c6c; border-right: none;"
+                        data-bind="
+                            style: { background: PokedexHelper.getBackgroundColors($data.name) },
+                            tooltip: {
+                                title: $data.name,
+                                placement: 'top',
+                                trigger:'hover'
+                            }">
+                        <img style="width: 100%; height: 100%;"
+                            data-bind="
+                                attr: { src: PokemonHelper.getImage($data.id, undefined, undefined, GameConstants.ShadowStatus.None) },
+                                css: {
+                                    'pokemon-not-seen': !PokedexHelper.pokemonSeen($data.id)(),
+                                    'pokemon-seen-but-not-caught': !App.game.party.alreadyCaughtPokemonByName($data.name) && PokedexHelper.pokemonSeen($data.id)()
+                                }"/>
+                        <img style="position: absolute; top: 2px; left: 2px; width: 16px; height: 16px;"
+                            data-bind="
+                                visible: App.game.party.alreadyCaughtPokemonByName($data.name),
+                                attr: { src: `assets/images/pokeball/Pokeball${App.game.party.alreadyCaughtPokemon($data.id, true) ? '-shiny' : ''}.svg` }"/>
+                        <div style="position:absolute; width: 48px; height: 17px; bottom: 2px; left: 50%; transform: translateX(-50%);"
+                             data-bind="
+                                with: App.game.party.getPokemon($data.id),
+                                tooltip: {
+                                    title: App.game.party.getPokemon($data.id)?.pokerus >= GameConstants.Pokerus.Contagious ? `EVs: ${App.game.party.getPokemon($data.id)?.evs().toLocaleString('en-US')}` : '',
+                                    placement: 'bottom',
+                                    trigger: 'hover'
+                                }">
+                            <!-- ko if: $data.pokerus >= GameConstants.Pokerus.Resistant -->
+                            <img style="position:absolute; top: 0; left: 0; width: 48px; height: 17px;"
+                                 src="assets/images/breeding/pokerus/Resistant.png" />
+                            <!-- /ko -->
+                            <!-- ko if: $data.pokerus == GameConstants.Pokerus.Contagious -->
+                            <img style="position:absolute; top: 0; left: 0; width: 48px; height: 17px;"
+                                 src="assets/images/breeding/pokerus/Contagious.png" />
+                            <img style="position:absolute; top: 0; left: 0; width: 48px; height: 17px;"
+                                 data-bind="style: { clipPath: `inset(0 0 0 ${$data.evs() * 2}%)` }"
+                                 src="assets/images/breeding/pokerus/Infected.png"/>
+                            <!-- /ko -->
+                        </div>
+
                     </td>
                     <td class="text-center align-middle p-1" style="width: 32px; border-right: 2px solid #6c6c6c;"
                         data-bind="with: App.game.party.getPokemon($data.id)">
