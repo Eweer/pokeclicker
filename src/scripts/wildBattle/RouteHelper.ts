@@ -38,6 +38,32 @@ class RouteHelper {
         return pokemonList;
     }
 
+    public static sortPokemonListByPokerusStatus(pokemonList: PokemonNameType[]): PokemonNameType[] {
+        const result: PokemonNameType[] = pokemonList;
+        result.sort((a, b) => {
+            const aPokerus = App.game.party.getPokemonByName(a)?.pokerus || 0;
+            const bPokerus = App.game.party.getPokemonByName(b)?.pokerus || 0;
+
+            if (aPokerus < bPokerus) {
+                return -1;
+            } else if (aPokerus > bPokerus) {
+                return 1;
+            }
+            if (aPokerus == GameConstants.Pokerus.Contagious) {
+                const aEVs = App.game.party.getPokemonByName(a)?.evs() || 0;
+                const bEVs = App.game.party.getPokemonByName(b)?.evs() || 0;
+                if (aEVs < bEVs) {
+                    return -1;
+                } else if (aEVs < bEVs) {
+                    return 1;
+                }
+                return 0;
+            }
+            return 0;
+        });
+        return result;
+    }
+
     public static routePokerusEVs(route:number, region:GameConstants.Region): string {
         const possiblePokemon: PokemonNameType[] = [...new Set(RouteHelper.getAvailablePokemonList(route, region))];
         if (this.minPokerus(possiblePokemon) == GameConstants.Pokerus.Resistant) {
