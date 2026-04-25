@@ -36,9 +36,9 @@
                     </td>
                     <td class="text-center align-middle p-1" style="border-right: 2px solid #6c6c6c;">
                         <img style="width: 32px;"
-                            data-bind="visible: parseInt($data.EVs.replace('EVs: ', '')) >= 50,
+                            data-bind="visible: parseInt($data.EVs.replace('EVs: ', '').replace(',', '')) >= 50,
                             attr: { src: $data.pkrsImage }"/>
-                        <span data-bind="visible: 50 > parseInt($data.EVs.replace('EVs: ', '')) && $data.pkrsImage,
+                        <span data-bind="visible: 50 > parseInt($data.EVs.replace('EVs: ', '').replace(',', '')) && $data.pkrsImage,
                             text: `${parseInt($data.EVs.replace('EVs: ', ''))}/50`"></span>
                         <span data-bind="visible: !$data.pkrsImage">-</span>
                     </td>
@@ -69,9 +69,9 @@
                     </td>
                     <td class="text-center align-middle p-1" style="border-right: 2px solid #6c6c6c;">
                         <img style="width: 32px;"
-                            data-bind="visible: parseInt($data.EVs.replace('EVs: ', '')) >= 50,
+                            data-bind="visible: parseInt($data.EVs.replace('EVs: ', '').replace(',', '')) >= 50,
                             attr: { src: $data.pkrsImage }"/>
-                        <span data-bind="visible: 50 > parseInt($data.EVs.replace('EVs: ', '')) && $data.pkrsImage,
+                        <span data-bind="visible: 50 > parseInt($data.EVs.replace('EVs: ', '').replace(',', '')) && $data.pkrsImage,
                             text: `${parseInt($data.EVs.replace('EVs: ', ''))}/50`"></span>
                         <span data-bind="visible: !$data.pkrsImage">-</span>
                     </td>

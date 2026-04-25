@@ -1,19 +1,10 @@
 <div class="table-responsive">
     <div style="overflow: 100%;">
         <table class="table table-sm m-0" style="width: 100%;">
-            <thead>
-                <tr>
-                    <th style="border-left: 2px solid #6c6c6c;">Pkmn</th>
-                    <th style="border-right: 2px solid #6c6c6c;">Status</th>
-                    <th style="border-left: 2px solid #6c6c6c;">Pkmn</th>
-                    <th colspan="2" style="border-right: 2px solid #6c6c6c;">Status</th>
-                </tr>
-            </thead>
-            <tbody data-bind="foreach: { data: RouteHelper.getAvailablePokemonList(player.route, player.region, true).filter((_, i) => i % 2 === 0), as: 'leftName' }">
-                <tr data-bind="with: PokemonHelper.getPokemonByName(leftName)">
-                    <!-- Left Pokémon -->
+            <tbody data-bind="foreach: { data: RouteHelper.getAvailablePokemonList(player.route, player.region, true), as: 'p' }">
+                <tr data-bind="with: PokemonHelper.getPokemonByName(p)">
                     <td class="text-center align-middle p-0"
-                        style="position: relative; width: 64px; border-left: 2px solid #6c6c6c; border-right: none;"
+                        style="position: relative; width: 64px;"
                         data-bind="
                             style: { background: PokedexHelper.getBackgroundColors($data.name) },
                             tooltip: {
@@ -52,50 +43,7 @@
                                  src="assets/images/breeding/pokerus/Infected.png"/>
                             <!-- /ko -->
                         </div>
-
                     </td>
-                    <td class="text-center align-middle p-1" style="width: 32px; border-right: 2px solid #6c6c6c;"
-                        data-bind="with: App.game.party.getPokemon($data.id)">
-                        <img style="width: 32px;"
-                            data-bind="visible: $data.pokerus >= GameConstants.Pokerus.Resistant,
-                                    attr: { src: `assets/images/breeding/pokerus/${GameConstants.Pokerus[$data.pokerus]}.png` }"/>
-                        <span data-bind="visible: $data.pokerus === GameConstants.Pokerus.Contagious,
-                                        text: `${$data.evs()}/50`"></span>
-                        <span data-bind="visible: $data.pokerus === GameConstants.Pokerus.Uninfected">-</span>
-                    </td>
-
-                    <!-- Right Pokémon -->
-                    <!-- ko if: RouteHelper.getAvailablePokemonList(player.route, player.region, true)[$index() * 2 + 1] -->
-                    <td class="text-center align-middle p-0" style="width: 48px; border-left: 2px solid #6c6c6c; border-right: none;"
-                        data-bind="with: PokemonHelper.getPokemonByName(RouteHelper.getAvailablePokemonList(player.route, player.region, true)[$index() * 2 + 1]),
-                                style: { background: $data ? PokedexHelper.getBackgroundColors(PokemonHelper.getPokemonByName(RouteHelper.getAvailablePokemonList(player.route, player.region, true)[$index() * 2 + 1])?.name) : '' }">
-                        <img style="width: 48px; height: 48px;"
-                            data-bind="attr: { src: PokemonHelper.getImage($data.id, undefined, undefined, GameConstants.ShadowStatus.None) },
-                                    css: {
-                                        'pokemon-not-seen': !PokedexHelper.pokemonSeen($data.id)(),
-                                        'pokemon-seen-but-not-caught': !App.game.party.alreadyCaughtPokemonByName($data.name) && PokedexHelper.pokemonSeen($data.id)()
-                                    }"/>
-                    </td>
-                    <td class="text-center align-middle p-1" style="width: 32px; border-right: none;"
-                        data-bind="with: PokemonHelper.getPokemonByName(RouteHelper.getAvailablePokemonList(player.route, player.region, true)[$index() * 2 + 1])">
-                        <img style="width: 18px; height: 18px;"
-                            data-bind="visible: App.game.party.alreadyCaughtPokemonByName($data.name),
-                                    attr: { src: `assets/images/pokeball/Pokeball${App.game.party.alreadyCaughtPokemon($data.id, true) ? '-shiny' : ''}.svg` }"/>
-                        <span data-bind="visible: !App.game.party.alreadyCaughtPokemonByName($data.name)">-</span>
-                    </td>
-                    <td class="text-center align-middle p-1" style="width: 32px; border-right: 2px solid #6c6c6c;"
-                        data-bind="with: App.game.party.getPokemon(PokemonHelper.getPokemonByName(RouteHelper.getAvailablePokemonList(player.route, player.region, true)[$index() * 2 + 1])?.id)">
-                        <img style="width: 32px;"
-                            data-bind="visible: $data.pokerus >= GameConstants.Pokerus.Resistant,
-                                    attr: { src: `assets/images/breeding/pokerus/${GameConstants.Pokerus[$data.pokerus]}.png` }"/>
-                        <span data-bind="visible: $data.pokerus === GameConstants.Pokerus.Contagious,
-                                        text: `${$data.evs()}/50`"></span>
-                        <span data-bind="visible: $data.pokerus === GameConstants.Pokerus.Uninfected">-</span>
-                    </td>
-                    <!-- /ko -->
-                    <!-- ko ifnot: RouteHelper.getAvailablePokemonList(player.route, player.region, true)[$index() * 2 + 1] -->
-                        <td colspan="3" style="border-left: 2px solid #6c6c6c; border-right: 2px solid #6c6c6c"></td>
-                    <!-- /ko -->
                 </tr>
             </tbody>
         </table>
