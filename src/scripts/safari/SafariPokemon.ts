@@ -63,18 +63,16 @@ class SafariPokemon implements PokemonInterface {
         return pokemon.weight * (App.game.party.alreadyCaughtPokemonByName(pokemon.name) ? 1 : 2);
     }
 
-    // FIXED: Multipliers for Nanab/Razz applying when used before a rock.
-
     public get catchFactor(): number {
         const oakBonus = App.game.oakItems.calculateBonus(OakItemType.Magic_Ball);
         let catchF = this.baseCatchFactor + oakBonus + (this.levelModifier * 10);
         if (this.eating > 0) {
-            catchF /= 2 - this.levelModifier;
-            if (this.eating === BaitType.Nanab) {
-                catchF *= 1.5 + this.levelModifier;
-            }
+            catchF /= (2 - this.levelModifier);
         } else if (this.angry > 0) {
-            catchF *= 2 + this.levelModifier;
+            catchF *= (2 + this.levelModifier);
+        }
+        if (this.eating === BaitType.Nanab) {
+            catchF *= (1.5 + this.levelModifier);
         }
 
         return Math.min(100, catchF);
@@ -83,12 +81,12 @@ class SafariPokemon implements PokemonInterface {
     public get escapeFactor(): number {
         let escapeF = this.baseEscapeFactor;
         if (this.eating > 0) {
-            escapeF /= 4 + this.levelModifier;
-            if (this.eating === BaitType.Razz) {
-                escapeF /= 1.5 + this.levelModifier;
-            }
+            escapeF /= (4 + this.levelModifier);
         } else if (this.angry > 0) {
-            escapeF *= 2 - this.levelModifier;
+            escapeF *= (2 - this.levelModifier);
+        }
+        if (this.eating === BaitType.Razz) {
+            escapeF /= (1.5 + this.levelModifier);
         }
 
         return escapeF;
