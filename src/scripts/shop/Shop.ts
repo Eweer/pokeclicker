@@ -17,6 +17,10 @@ class Shop extends TownContent {
         ShopHandler.showShop(this);
         $('#shopModal').modal('show');
     }
+    public getExtraItems(): Item[] {
+        const excludeItemsFrom = DepartmentStoreShop.items;
+        return this.items.filter(item => !excludeItemsFrom.includes(item));
+    }
     public tooltip = 'Visit shops to buy items.';
     constructor(
         public items: Item[],

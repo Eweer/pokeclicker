@@ -1,15 +1,18 @@
 <div id="routeInfoContainer" class="card sortable border-secondary mb-3"
-    data-bind="visible: App.game.gameState === GameConstants.GameState.fighting || App.game.gameState === GameConstants.GameState.dungeon">
+    data-bind="visible: App.game.gameState === GameConstants.GameState.town || App.game.gameState === GameConstants.GameState.fighting || App.game.gameState === GameConstants.GameState.dungeon">
     <div class="card-header p-0" data-toggle="collapse" href="#routeInfoBody">
         <span data-bind="
-            text: App.game.gameState === GameConstants.GameState.dungeon ? DungeonRunner.dungeon.name : Routes.getName(player.route, player.region)">Route</span>
+            text: App.game.gameState === GameConstants.GameState.town ? player.town.name : App.game.gameState === GameConstants.GameState.dungeon ? DungeonRunner.dungeon.name : Routes.getName(player.route, player.region)">Route</span>
     </div>
     <div id="routeInfoBody" class="card-body p-0 show">
         <!-- ko if: App.game.gameState === GameConstants.GameState.fighting -->
-        @import "routeInfoTable.html"
+        @import "zoneExtraInfo/routeInfoTable.html"
         <!-- /ko -->
-         <!-- ko if: App.game.gameState === GameConstants.GameState.dungeon -->
-        @import "dungeonInfoTable.html"
+        <!-- ko if: App.game.gameState === GameConstants.GameState.dungeon -->
+        @import "zoneExtraInfo/dungeonInfoTable.html"
+        <!-- /ko -->
+        <!-- ko if: App.game.gameState === GameConstants.GameState.town -->
+        @import "zoneExtraInfo/townInfoTable.html"
         <!-- /ko -->
     </div>
 </div>

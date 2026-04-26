@@ -1,0 +1,4 @@
+<div style="display: flex; flex-wrap: wrap;",
+     data-bind="foreach: { data: GameHelper.filterUniqueBy(player.town.getNonStandardShopItems(), `name`).filter(i => i.isAvailable()) }">
+    <img style="width: 25%;" data-bind="attr: { src: `${$data.image}` }"/>
+</div>

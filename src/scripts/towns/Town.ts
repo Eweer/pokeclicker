@@ -65,6 +65,10 @@ class Town implements TmpTownType {
     public isUnlocked() {
         return this.requirements.every(requirement => requirement.isCompleted());
     }
+
+    public getNonStandardShopItems() {
+        return this.content.filter((c): c is Shop => c instanceof Shop).flatMap(s => s.getExtraItems());
+    }
 }
 
 class DungeonTown extends Town {

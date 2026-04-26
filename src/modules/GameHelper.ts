@@ -118,6 +118,20 @@ export default class GameHelper {
         }).reverse();
     }
 
+    // Filter out repeated objects by a specific property
+    public static filterUniqueBy(arr: any[], prop: any) {
+        const uniqueBy = (p: string | number) => {
+            const seen = new Set();
+            return (item: { [x: string]: any; }) => {
+                const value = item[p];
+                if (seen.has(value)) return false;
+                seen.add(value);
+                return true;
+            };
+        };
+        return arr.filter(uniqueBy(prop));
+    }
+
     public static anOrA(name: string): string {
         return ['a', 'e', 'i', 'o', 'u'].includes(name[0].toLowerCase()) ? 'an' : 'a';
     }
