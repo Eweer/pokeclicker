@@ -5,7 +5,7 @@
             tooltip: {
                 title:  ($data.evs !== undefined ? `EVs: ${$data.evs.toLocaleString('en-US')}` : '') + ($data.evsProgress ?? ''),
                 trigger: 'hover',
-                placement: 'top',
+                placement: ($data.placement ?? 'top'),
             }"/>
         <!-- /ko -->
     </knockout>
