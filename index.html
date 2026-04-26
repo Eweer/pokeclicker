@@ -1285,7 +1285,7 @@
             tooltip: {
                 title:  ($data.evs !== undefined ? `EVs: ${$data.evs.toLocaleString('en-US')}` : '') + ($data.evsProgress ?? ''),
                 trigger: 'hover',
-                placement: 'top',
+                placement: ($data.placement ?? 'top'),
             }"/>
         <!-- /ko -->
     </knockout>
@@ -57599,9 +57599,45 @@ selectAllClick - (Optional) Function called when the Select All button is clicke
         <!-- /ko -->
         <!-- ko if: App.game.gameState === GameConstants.GameState.town -->
         <!-- imported from src/components/zoneExtraInfo/townInfoTable.html -->
-<div style="display: flex; flex-wrap: wrap;",
+<div style="display: flex; flex-wrap: wrap;"
      data-bind="foreach: { data: GameHelper.filterUniqueBy(player.town.getNonStandardShopItems(), `name`).filter(i => i.isAvailable()) }">
-    <img style="width: 25%;" data-bind="attr: { src: `${$data.image}` }"/>
+    <div style="position: relative; width: 10%; min-width: 56px; padding-bottom: 8px; padding-top: 8px;">
+        <img style="width: 10%; min-width: 56px"
+            data-bind="
+                attr: { src: `${$data.image}` },
+                tooltip: {
+                    title: $data.shopTooltip,
+                    trigger: 'hover',
+                    placement:'bottom',
+                    boundary: 'viewport',
+                    html: true
+                }"/>
+        <div style="position:absolute; top: 0px; left: 0px; width: 100%; height: 100%">
+            <!-- ko if: $data instanceof PokemonItem -->
+            <span style="position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%);"
+                  data-bind="template: { name: 'pokerusStatusTemplate', data: {
+                      'pokerus': $data.getPokerusStatus(),
+                      'width': '32px',
+                      'evs': App.game.party.getPokemonByName($data.type)?.evs(),
+                      'placement': 'bottom' }}">
+            </span>
+            <!-- /ko -->
+            <!-- ko if: $data instanceof EvolutionStone -->
+            <span style="position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%);"
+                  data-bind="template: { name: 'pokerusStatusTemplate', data: {
+                      'pokerus': ItemList[$data.name].getPokerusStatus(),
+                      'width': '32px',
+                      'evsProgress': ItemList[$data.name].getPokerusProgress(),
+                      'placement': 'bottom' }}">
+            </span>
+            <!-- /ko -->
+            <!-- ko if: $data instanceof CaughtIndicatingItem -->
+            <span style="position: absolute; top: 0px; left: 0px;"
+                  data-bind="template: { name: 'caughtStatusTemplate', data: {'status': $data.getCaughtStatus()}}">
+            </span>
+            <!-- /ko -->
+        </div>
+    </div>
 </div>
 
         <!-- /ko -->
