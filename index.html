@@ -57444,14 +57444,14 @@ selectAllClick - (Optional) Function called when the Select All button is clicke
                     <!-- RotomDexRouteInfo -->
                     <!-- imported from src/components/routeInfoContainer.html -->
 <div id="routeInfoContainer" class="card sortable border-secondary mb-3"
-    data-bind="visible: App.game.gameState === GameConstants.GameState.fighting || App.game.gameState === GameConstants.GameState.dungeon">
+    data-bind="visible: App.game.gameState === GameConstants.GameState.town || App.game.gameState === GameConstants.GameState.fighting || App.game.gameState === GameConstants.GameState.dungeon">
     <div class="card-header p-0" data-toggle="collapse" href="#routeInfoBody">
         <span data-bind="
-            text: App.game.gameState === GameConstants.GameState.dungeon ? DungeonRunner.dungeon.name : Routes.getName(player.route, player.region)">Route</span>
+            text: App.game.gameState === GameConstants.GameState.town ? player.town.name : App.game.gameState === GameConstants.GameState.dungeon ? DungeonRunner.dungeon.name : Routes.getName(player.route, player.region)">Route</span>
     </div>
     <div id="routeInfoBody" class="card-body p-0 show">
         <!-- ko if: App.game.gameState === GameConstants.GameState.fighting -->
-        <!-- imported from src/components/routeInfoTable.html -->
+        <!-- imported from src/components/zoneExtraInfo/routeInfoTable.html -->
 <div class="table-responsive">
     <div style="overflow: 100%;">
         <table class="table table-sm m-0" style="width: 100%;">
@@ -57507,8 +57507,8 @@ selectAllClick - (Optional) Function called when the Select All button is clicke
 </div>
 
         <!-- /ko -->
-         <!-- ko if: App.game.gameState === GameConstants.GameState.dungeon -->
-        <!-- imported from src/components/dungeonInfoTable.html -->
+        <!-- ko if: App.game.gameState === GameConstants.GameState.dungeon -->
+        <!-- imported from src/components/zoneExtraInfo/dungeonInfoTable.html -->
 <div class="table-responsive">
     <div style="overflow: 100%;">
         <table class="table table-sm m-0" style="width: 100%;">
@@ -57594,6 +57594,14 @@ selectAllClick - (Optional) Function called when the Select All button is clicke
             </tbody>
         </table>
     </div>
+</div>
+
+        <!-- /ko -->
+        <!-- ko if: App.game.gameState === GameConstants.GameState.town -->
+        <!-- imported from src/components/zoneExtraInfo/townInfoTable.html -->
+<div style="display: flex; flex-wrap: wrap;",
+     data-bind="foreach: { data: GameHelper.filterUniqueBy(player.town.getNonStandardShopItems(), `name`).filter(i => i.isAvailable()) }">
+    <img style="width: 25%;" data-bind="attr: { src: `${$data.image}` }"/>
 </div>
 
         <!-- /ko -->
