@@ -8,7 +8,7 @@
                         data-bind="with: PokemonHelper.getPokemonByName(p)">
                         <div style="position: relative; width: auto;"
                              data-bind="style: { background: PokedexHelper.getBackgroundColors($data.name) }">
-                            <img style="width: 100%; height: 100%;"
+                            <img style="width: 100%; height: 100%; filter: drop-shadow(-1px -1px rgba(34, 34, 34, 0.2)) drop-shadow(1px 1px rgba(34, 34, 34, 0.2)) drop-shadow(1px -1px rgba(34, 34, 34, 0.2)) drop-shadow(-1px 1px rgba(34, 34, 34, 0.2));"
                                 data-bind="
                                     attr: { src: PokemonHelper.getImage($data.id, undefined, undefined, GameConstants.ShadowStatus.None) },
                                     css: {
@@ -24,6 +24,12 @@
                                         placement: 'top',
                                         trigger:'hover'
                                     }"/>
+                            <div style="position:absolute; width: 20px; height: 20px; top: 0px; right: 2px;">
+                                <!-- ko if: App.game.party.alreadyCaughtPokemon($data.id) && App.game.party.getPokemon($data.id).heldItem() -->
+                                <img style="position: relative; top: 0; right: 0; width: 20px; height: 20px; filter: drop-shadow(2px 1px rgba(34, 34, 34, 0.774));"
+                                    data-bind="attr: { src: `${App.game.party.getPokemon($data.id).heldItem().image}` }"/>
+                                <!-- /ko -->
+                            </div>
                             <div style="position:absolute; width: 40px; height: 14px; bottom: 3px; left: 50%; transform: translateX(-50%);"
                                 data-bind="
                                     with: App.game.party.getPokemon($data.id),

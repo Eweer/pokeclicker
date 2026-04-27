@@ -9,13 +9,12 @@
                     <th colspan="2" style="border-right: 2px solid #6c6c6c;">Status</th>
                 </tr>
             </thead>
-            <tbody data-bind="foreach: { data: DungeonRunner.dungeon.allEncounterGrid.filter(i => !i.hide && !i.shadowTrainer).filter((_, i) => i % 2 === 0), as: 'leftColumn' }">
-                <tr>
-                    <!-- Left Pokémon -->
+            <tbody data-bind="foreach: { data: GameHelper.chunk(2, DungeonRunner.dungeon.allEncounterGrid.filter(i => !i.hide && !i.shadowTrainer)), as: 'row' }">
+                <tr data-bind="foreach: { data: row, as: 'p' }">
                     <td class="text-center align-middle p-0"
                         style="position: relative; width: 48px; border-left: 2px solid #6c6c6c; border-right: none;"
                         data-bind="style: { background: PokedexHelper.getBackgroundColors($data.pokemonName) }">
-                        <img style="width: 48px; height: 48px;"
+                        <img style="width: 48px; height: 48px;  filter: drop-shadow(-1px -1px rgba(34, 34, 34, 0.2)) drop-shadow(1px 1px rgba(34, 34, 34, 0.2)) drop-shadow(1px -1px rgba(34, 34, 34, 0.2)) drop-shadow(-1px 1px rgba(34, 34, 34, 0.2));"
                             data-bind="attr: { src: $data.image },
                             css: {
                                 'pokemon-not-seen': !PokedexHelper.pokemonSeenByName($data.pokemonName)(),
@@ -23,8 +22,21 @@
                             }"/>
                         <!-- ko if: $data.isBoss -->
                         <img class="boss"
-                            style="position: absolute; bottom: 0; right: 0; width: 16px; height: 16 px"
+                            style="position: absolute; bottom: 0px; right: 0px; width: 16px; height: 16 px; filter: drop-shadow(-1px -1px rgba(34, 34, 34, 0.2)) drop-shadow(1px 1px rgba(34, 34, 34, 0.2)) drop-shadow(1px -1px rgba(34, 34, 34, 0.2)) drop-shadow(-1px 1px rgba(34, 34, 34, 0.2));"
                             src="assets/images/dungeons/boss.svg"/>
+                        <!-- /ko -->
+                        <!-- ko if: $data.mimic -->
+                        <img class="boss"
+                             style="position: absolute; bottom: 2px; right: 0px; width: 16px; height: auto; filter: drop-shadow(-1px -1px rgba(34, 34, 34, 0.774));"
+                             data-bind="attr: { src: `assets/images/dungeons/chest-${$data.mimicTier}.png` },
+                             tooltip: {
+                                title: GameConstants.camelCaseToString($data.mimicTier),
+                                trigger: 'hover'
+                             }"/>
+                        <!-- /ko -->
+                        <!-- ko if: App.game.party.alreadyCaughtPokemonByName($data.pokemonName) && App.game.party.getPokemonByName($data.pokemonName).heldItem() -->
+                        <img style="position: absolute; top: 0; right: 0; width: 16px; height: 16 px;  filter: drop-shadow(2px 1px rgba(34, 34, 34, 0.774));"
+                             data-bind="attr: { src: `${App.game.party.getPokemonByName($data.pokemonName).heldItem().image}` }"/>
                         <!-- /ko -->
                     </td>
                     <td class="text-center align-middle p-1" style="border-right: none;">
@@ -42,43 +54,6 @@
                             text: `${parseInt($data.EVs.replace('EVs: ', ''))}/50`"></span>
                         <span data-bind="visible: !$data.pkrsImage">-</span>
                     </td>
-
-                    <!-- Right Pokémon -->
-                    <!-- ko with: DungeonRunner.dungeon.allEncounterGrid.filter(i => !i.hide && !i.shadowTrainer)[$index() * 2 + 1] -->
-                    <td class="text-center align-middle p-0"
-                        style="position: relative; width: 48px; border-left: 2px solid #6c6c6c; border-right: none;"
-                        data-bind="style: { background: PokedexHelper.getBackgroundColors($data.pokemonName) }">
-                        <img style="width: 48px; height: 48px;"
-                            data-bind="attr: { src: $data.image },
-                            css: {
-                                'pokemon-not-seen': !PokedexHelper.pokemonSeenByName($data.pokemonName)(),
-                                'pokemon-seen-but-not-caught': $data.uncaught && PokedexHelper.pokemonSeenByName($data.pokemonName)()
-                            }"/>
-                        <!-- ko if: $data.isBoss -->
-                        <img class="boss"
-                            style="position: absolute; bottom: 0; right: 0; width: 16px; height: 16 px;"
-                            src="assets/images/dungeons/boss.svg"/>
-                        <!-- /ko -->
-                    </td>
-                    <td class="text-center align-middle p-1" style="border-right: none;">
-                        <img style="width: 18px; height: 18px;"
-                            data-bind="visible: !$data.uncaught,
-                            attr: { src: `assets/images/pokeball/Pokeball${$data.shiny ? '-shiny' : ''}.svg` }"/>
-                        <span data-bind="visible: $data.uncaught,
-                            text: `${PokemonFactory.catchRateHelper(PokemonHelper.getPokemonByName($data.pokemonName).catchRate)}%`"></span>
-                    </td>
-                    <td class="text-center align-middle p-1" style="border-right: 2px solid #6c6c6c;">
-                        <img style="width: 32px;"
-                            data-bind="visible: parseInt($data.EVs.replace('EVs: ', '').replace(',', '')) >= 50,
-                            attr: { src: $data.pkrsImage }"/>
-                        <span data-bind="visible: 50 > parseInt($data.EVs.replace('EVs: ', '').replace(',', '')) && $data.pkrsImage,
-                            text: `${parseInt($data.EVs.replace('EVs: ', ''))}/50`"></span>
-                        <span data-bind="visible: !$data.pkrsImage">-</span>
-                    </td>
-                    <!-- /ko -->
-                    <!-- ko ifnot: $data -->
-                        <td colspan="3" style="border-left: 2px solid #6c6c6c; border-right: 2px solid #6c6c6c"></td>
-                    <!-- /ko -->
                 </tr>
             </tbody>
         </table>

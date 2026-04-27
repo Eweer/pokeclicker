@@ -116,6 +116,14 @@ class Party implements Feature, TmpPartyType {
                 setting: NotificationConstants.NotificationSetting.General.new_catch,
             });
         }
+        if (!newCatch && !newShiny && !newShadow) {
+            Notifier.notify({
+                message: `You have captured ${GameHelper.anOrA(name)} ${displayName}`,
+                pokemonImage: PokemonHelper.getImage(id, shiny, gender, shadow),
+                type: NotificationConstants.NotificationOption.info,
+                setting: NotificationConstants.NotificationSetting.General.new_catch,
+            });
+        }
 
         // Logbook entries
         if (newCatch) {
