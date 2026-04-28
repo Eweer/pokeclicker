@@ -16,11 +16,16 @@ class DreamOrbController implements Saveable {
     public amountSelected = ko.observable(1);
     public amountOpened = ko.observable(0);
     public itemsReceived = ko.observableArray();
+    public uiOrbs = new Map();
 
     constructor() {
         this.selectedOrb = ko.observable(this.orbs[0]);
         this.opening = ko.observable(false);
         this.item = ko.observable(undefined);
+        this.uiOrbs.set('Pink', { opening: ko.observable(false), item: ko.observable(undefined), itemsReceived: ko.observableArray([]) });
+        this.uiOrbs.set('Green', { opening: ko.observable(false), item: ko.observable(undefined), itemsReceived: ko.observableArray([]) });
+        this.uiOrbs.set('Orange', { opening: ko.observable(false), item: ko.observable(undefined), itemsReceived: ko.observableArray([]) });
+        this.uiOrbs.set('Blue', { opening: ko.observable(false), item: ko.observable(undefined), itemsReceived: ko.observableArray([]) });
     }
 
     public orbs = [
@@ -67,6 +72,55 @@ class DreamOrbController implements Saveable {
             new DreamOrbLoot({type: ItemType.item, id: 'Max_revive'}, 0.1),
         ]),
     ]
+
+    public getQty(color: string) {
+        return this.orbs.find(orb => orb.color === color)?.amount() ?? 0;
+    }
+
+    public openColor(color: string) {
+        if (this.uiOrbs.get(color)?.opening()) {
+            return;
+        }
+        const selectedOrb = this.orbs.find(orb => orb.color === color);
+        if (!selectedOrb) {
+            return;
+        }
+
+        if (!selectedOrb.amount()) {
+            Notifier.notify({
+                message: 'No orbs left.',
+                type: NotificationConstants.NotificationOption.danger,
+            });
+            return;
+        }
+        this.uiOrbs.get(color).opening(true);
+
+        const amountToOpen = Math.min(this.amountSelected(), selectedOrb.amount());
+        this.uiOrbs.get(color).item(undefined);
+        setTimeout(() => {
+            const itemWeights = selectedOrb.items.map((i) => i.weight);
+            const items: Record<string | number, { amount: number; item: BagItem }> = {};
+            for (let i = 0; i < amountToOpen; i++) {
+                const orbLoot = Rand.fromWeightedArray(selectedOrb.items, itemWeights);
+                items[orbLoot.item.id] ?
+                    items[orbLoot.item.id].amount++ :
+                    items[orbLoot.item.id] = { item: orbLoot.item, amount: 1 };
+                if (i + 1 >= amountToOpen) {
+                    this.uiOrbs.get(color).item(orbLoot);
+                }
+            }
+            GameHelper.incrementObservable(selectedOrb.amount, amountToOpen * -1);
+            Object.keys(items).forEach((key) => {
+                BagHandler.gainItem(items[key].item, items[key].amount);
+            });
+            this.uiOrbs.get(color).opening(false);
+            this.amountOpened(amountToOpen);
+            this.uiOrbs.get(color).itemsReceived(Object.values(items).map((item) => ({ name: BagHandler.displayName(item.item), ...item })));
+            if (amountToOpen > 1) {
+                $('#dreamOrbsOpenedModal').modal('show');
+            }
+        }, 1800);
+    }
 
     public open() {
         if (this.opening()) {

@@ -1,38 +1,56 @@
 <div class="modal fade noselect" id="dreamOrbsModal" tabindex="-1" role="dialog"
 aria-labelledby="dreamOrbsModalLabel">
-<div class="modal-dialog modal-dialog-scrollable" role="document">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h5 class="modal-title">Open Dream Orbs</h5>
-        </div>
-        <div class="modal-body">
-            <select id="dream-orbs-selector" class="custom-select" onchange="App.game.dreamOrbController.item(undefined)" style="margin-right: 8px"
-                    data-bind="options: App.game.dreamOrbController.orbs.filter((o) => !o.requirement ||o.requirement.isCompleted()),
-                               optionsText: 'color',
-                               value: App.game.dreamOrbController.selectedOrb"
-            >
-            </select>
-            <img data-bind="attr: { src: App.game.dreamOrbController.item() ? BagHandler.image(App.game.dreamOrbController.item().item) :
-                ('assets/images/dreamOrbs/dream_orb_' +
-                App.game.dreamOrbController.selectedOrb().color.toLowerCase() +
-                (App.game.dreamOrbController.opening() ? '_animated' : '') +
-                '.png')
-            }" height = "120px'"/>
-            <div>
-                <div class="btn-group">
-                    <button class="btn btn-primary" onclick="App.game.dreamOrbController.open()">Open</button>
-                    <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split active" data-bind="text: App.game.dreamOrbController.amountSelected().toLocaleString('en-US') + '&nbsp;'" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <div class="modal-dialog modal-dialog-scrollable" role="document">
+        <div class="modal-content" width: 640px;>
+            <div class="modal-header">
+                <h5 class="modal-title">Open Dream Orbs</h5>
+            </div>
+            <div style="display:flex; flex-direction: row; justify-content: center;"
+                data-bind="foreach: { data: App.game.dreamOrbController.orbs }">
+                <div style="width: 128px; display:flex; flex-direction: column; align-items: center;">
+                    <!-- ko if: App.game.dreamOrbController.uiOrbs.get($data.color).item() -->
+                    <img style="height: 128px; width: 128px; margin-left: auto; margin-right: auto;"
+                        data-bind="attr: { src: `${BagHandler.image(App.game.dreamOrbController.uiOrbs.get($data.color).item().item)}` }"/>
+                    <!-- /ko -->
+                    <!-- ko ifnot: App.game.dreamOrbController.uiOrbs.get($data.color).item() -->
+                        <!-- ko if: App.game.dreamOrbController.uiOrbs.get($data.color).opening() -->
+                        <img style="height: 128px; width: 128px; margin-left: 8px; margin-right: auto;"
+                            data-bind="attr: { src: `assets/images/dreamOrbs/dream_orb_${$data.color.toLowerCase()}_animated.png?t=${Date.now()}` }"/>
+                        <!-- /ko -->
+                        <!-- ko ifnot: App.game.dreamOrbController.uiOrbs.get($data.color).opening() -->
+                            <!-- ko if: App.game.dreamOrbController.getQty($data.color) > 0 -->
+                            <img style="height: 128px; width: 128px; margin-left: 8px; margin-right: auto;"
+                                data-bind="attr: { src: `assets/images/dreamOrbs/dream_orb_${$data.color.toLowerCase()}.png` }"/>
+                            <!-- /ko -->
+                            <!-- ko ifnot: App.game.dreamOrbController.getQty($data.color) > 0 -->
+                            <img style="height: 128px; width: 128px; margin-left: 8px; margin-right: auto; filter: grayscale(100%);"
+                                data-bind="attr: { src: `assets/images/dreamOrbs/dream_orb_${$data.color.toLowerCase()}.png` }"/>
+                            <!-- /ko -->
+                        <!-- /ko -->
+                    <!-- /ko -->
+                    <!-- ko if: App.game.dreamOrbController.getQty($data.color) > 0 -->
+                    <button class="btn btn-primary"
+                            style="margin-top: -13px;"
+                            data-bind="
+                                style: { backgroundColor: 'Light' + ($data.color == 'Orange' ? 'Salmon' : $data.color.toLowerCase()), color: 'darkslategray' },
+                                click: () => App.game.dreamOrbController.openColor($data.color),
+                                disable: App.game.dreamOrbController.uiOrbs.get($data.color).opening()">
+                                Open (<span data-bind="text: $data.amount().toLocaleString('en-US')"></span>)
                     </button>
-                    <div class="dropdown-menu" data-bind="foreach: [1, 10, 100, 1000, Infinity]">
-                        <button class="dropdown-item" type="button" data-bind="click: function(){App.game.dreamOrbController.amountSelected($data)}, text: $data.toLocaleString('en-US')"></button>
-                    </div>
+                    <!-- /ko -->
+                    <!-- ko ifnot: App.game.dreamOrbController.getQty($data.color) > 0 -->
+                    <button class="btn btn-secondary"
+                            style="margin-top: -13px;"
+                            data-bind="style: { color: 'Light' + ($data.color == 'Orange' ? 'Salmon' : $data.color.toLowerCase()) }"
+                            disabled>
+                                No orbs left
+                    </button>
+                    <!-- /ko -->
                 </div>
             </div>
-            <div>Orbs left: <span data-bind="text: App.game.dreamOrbController.selectedOrb().amount().toLocaleString('en-US')"></span></div>
-        </div>
-        <div class="modal-footer">
-            <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            </div>
         </div>
     </div>
-</div>
 </div>
