@@ -55,6 +55,41 @@ class Party implements Feature, TmpPartyType {
         this.gainPokemonById(pokemon.id, shiny, suppressNotification, gender, shadow);
     }
 
+    sendEVNotification(
+        id: number,
+        shiny = false,
+        gender: GameConstants.BattlePokemonGender = PokemonFactory.generateGenderById(id),
+        shadow: GameConstants.ShadowStatus = GameConstants.ShadowStatus.None,
+        number = GameConstants.BASE_EP_YIELD,
+        suppressNewCatchNotification = false,
+        ignore = false
+    ) {
+        const isShadow = shadow === GameConstants.ShadowStatus.Shadow;
+        const newCatch = !this.alreadyCaughtPokemon(id);
+        const newShiny = shiny && !this.alreadyCaughtPokemon(id, true);
+        const newShadow = isShadow && !this.alreadyCaughtPokemon(id, false, true);
+        if (newCatch) {
+            return;
+        }
+        const partyPokemon = this.getPokemon(id);
+        if (!partyPokemon) {
+            return;
+        }
+        const { name, displayName } = partyPokemon;
+        const power = App.game.challenges.list.slowEVs.active.peek() ? GameConstants.EP_CHALLENGE_MODIFIER : 1;
+        const epYield = this.calculateEffortPoints(partyPokemon, shiny, shadow, number, ignore);
+        const evYield = epYield / GameConstants.EP_EV_RATIO / power;
+        if (epYield <= 0 || evYield <= 0) {
+            return;
+        }
+        Notifier.notify({
+            message: `${displayName} gained ${evYield} EV${epYield == (GameConstants.EP_EV_RATIO / power) ? '' : 's'}!`,
+            pokemonImage: PokemonHelper.getImage(id, shiny, gender, shadow),
+            type: NotificationConstants.NotificationOption.info,
+            setting: NotificationConstants.NotificationSetting.General.new_catch,
+        });
+    }
+
     gainPokemonById(id: number,
         shiny = false,
         suppressNewCatchNotification = false,
@@ -113,14 +148,6 @@ class Party implements Feature, TmpPartyType {
                 pokemonImage: PokemonHelper.getImage(id, shiny, gender, shadow),
                 type: NotificationConstants.NotificationOption.warning,
                 sound: NotificationConstants.NotificationSound.General.new_catch,
-                setting: NotificationConstants.NotificationSetting.General.new_catch,
-            });
-        }
-        if (!newCatch && !newShiny && !newShadow) {
-            Notifier.notify({
-                message: `You have captured ${GameHelper.anOrA(name)} ${displayName}`,
-                pokemonImage: PokemonHelper.getImage(id, shiny, gender, shadow),
-                type: NotificationConstants.NotificationOption.info,
                 setting: NotificationConstants.NotificationSetting.General.new_catch,
             });
         }

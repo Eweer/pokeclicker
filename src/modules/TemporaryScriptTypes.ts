@@ -336,7 +336,16 @@ export type TmpPartyType = {
         ignoreLevel?: boolean,
         includeTempBonuses?: boolean,
     ) => number;
-    getRegionAttackMultiplier: (highestRegion?: GameConstants.Region) => number
+    getRegionAttackMultiplier: (highestRegion?: GameConstants.Region) => number;
+    sendEVNotification: (
+        id: number,
+        shiny: boolean,
+        gender: GameConstants.BattlePokemonGender,
+        shadow: GameConstants.ShadowStatus,
+        number: number,
+        suppressNewCatchNotification?: boolean,
+        ignore?: boolean
+    ) => void;
     calculateEffortPoints: (pokemon: TmpPartyPokemonType, shiny: boolean, shadow: GameConstants.ShadowStatus, number: number, ignore?: boolean) => number;
     getPokemon: (id: number) => TmpPartyPokemonType | undefined;
     getPokemonByName: (name: PokemonNameType) => TmpPartyPokemonType | undefined;
