@@ -1104,7 +1104,7 @@ class Farming implements Feature {
                 'In days of old, people worked the top-shaped pieces of this Berry free and used them as toys.',
                 'These berries make catching efforts worth more.',
             ],
-            new Aura(AuraType.Ev, [1.005, 1.01, 1.015])
+            new Aura(AuraType.Ev, [1.005, 1.012, 1.019])
         );
 
         this.berryData[BerryType.Kee] = new Berry(
