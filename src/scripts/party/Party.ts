@@ -7,7 +7,6 @@ class Party implements Feature, TmpPartyType {
     saveKey = 'party';
 
     private _caughtPokemon: KnockoutObservableArray<PartyPokemon>;
-
     defaults = {
         caughtPokemon: [],
     };
@@ -17,6 +16,7 @@ class Party implements Feature, TmpPartyType {
     hasShadowPokemon: KnockoutComputed<boolean>;
 
     private _caughtPokemonLookup: KnockoutComputed<Map<number, PartyPokemon>>;
+    private _pokemonBallMap: KnockoutObservable<Map<number, GameConstants.Pokeball>>;
 
     calculateBaseClickAttack: KnockoutComputed<number>;
 
@@ -48,6 +48,7 @@ class Party implements Feature, TmpPartyType {
             return Math.pow(partyClickBonus, 1.4);
         });
 
+        this._pokemonBallMap = ko.observable(new Map());
     }
 
     gainPokemonByName(name: PokemonNameType, shiny?: boolean, suppressNotification?: boolean, gender?: GameConstants.BattlePokemonGender, shadow?: GameConstants.ShadowStatus) {
@@ -382,6 +383,25 @@ class Party implements Feature, TmpPartyType {
         return true;
     }
 
+    public getPokemonPokeball(pkmnId: number): GameConstants.Pokeball | undefined {
+        return this._pokemonBallMap().get(pkmnId);
+    }
+
+    public setPokemonPokeball(pkmnId: number, ball: GameConstants.Pokeball): void {
+        const map = new Map(this._pokemonBallMap());
+        map.set(pkmnId, ball);
+        this._pokemonBallMap(map);
+    }
+
+    public removePokemonPokeball(pkmnId: number): void {
+        if (!this._pokemonBallMap().has(pkmnId)) {
+            return;
+        }
+        const map = new Map(this._pokemonBallMap());
+        map.delete(pkmnId);
+        this._pokemonBallMap(map);
+    }
+
     fromJSON(json: Record<string, any>): void {
         if (json == null) {
             return;
@@ -394,6 +414,10 @@ class Party implements Feature, TmpPartyType {
             return partyPokemon;
         });
         this._caughtPokemon(caughtPokemon);
+
+        if (json.pokemonBallMap) {
+            this._pokemonBallMap(new Map(json.pokemonBallMap));
+        }
     }
 
     initialize(): void {
@@ -402,6 +426,7 @@ class Party implements Feature, TmpPartyType {
     toJSON(): Record<string, any> {
         return {
             caughtPokemon: this._caughtPokemon().map(x => x.toJSON()),
+            pokemonPokeballMap: Array.from(this._pokemonBallMap().entries()),
         };
     }
 

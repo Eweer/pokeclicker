@@ -154,6 +154,26 @@ class Pokeballs implements Feature {
         });
     }
 
+    public getPokeballForBasePokemon(id: number, isShadow: boolean, origEncounterType: EncounterType): GameConstants.Pokeball {
+        const alreadyCaught = App.game.party.alreadyCaughtPokemon(id);
+        const alreadyCaughtShadow = App.game.party.alreadyCaughtPokemon(id, false, true);
+        const pokemon = PokemonHelper.getPokemonById(id);
+        const isUltraBeast = GameConstants.UltraBeastType[pokemon.name] != undefined;
+        const encounterType = isUltraBeast ? EncounterType.ultraBeast : origEncounterType;
+
+        return App.game.pokeballFilters.findMatch({
+            caught: alreadyCaught,
+            caughtShiny: false,
+            caughtShadow: alreadyCaughtShadow,
+            shadow: isShadow,
+            shiny: false,
+            pokerus: App.game.party.getPokemon(id)?.pokerus,
+            pokemonType: [pokemon.type1, pokemon.type2],
+            encounterType,
+            category: App.game.party.getPokemon(id)?.category,
+        })?.ball() ?? GameConstants.Pokeball.None;
+    }
+
     /**
      * Checks the players preferences to see what pokéball needs to be used on the next throw.
      * Checks from the players pref to the most basic ball to see if the player has any.
