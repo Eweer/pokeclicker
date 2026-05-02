@@ -57454,11 +57454,9 @@ selectAllClick - (Optional) Function called when the Select All button is clicke
         <!-- imported from src/components/zoneExtraInfo/routeInfoTable.html -->
 <div style="display: flex; flex-wrap: wrap;"
     data-bind="foreach: { data: RouteHelper.sortPokemonListByPokerusStatus(RouteHelper.getAvailablePokemonList(player.route, player.region, true)), as: 'p' }">
+    <!-- ko with: PokemonHelper.getPokemonByName(p) -->
     <div style="position: relative; width: 12.5%; min-width: 71px; border: 1px black solid;"
-         data-bind="
-            with: PokemonHelper.getPokemonByName(p),
-            style: { background: PokedexHelper.getBackgroundColors($data.name) };"
-    >
+         data-bind="style: { background: PokedexHelper.getBackgroundColors($data.name) };">
         <img style="width: 100%; height: 100%; filter: drop-shadow(-1px -1px rgba(34, 34, 34, 0.2)) drop-shadow(1px 1px rgba(34, 34, 34, 0.2)) drop-shadow(1px -1px rgba(34, 34, 34, 0.2)) drop-shadow(-1px 1px rgba(34, 34, 34, 0.2));"
             data-bind="
                 attr: { src: PokemonHelper.getImage($data.id, undefined, undefined, GameConstants.ShadowStatus.None) },
@@ -57501,6 +57499,7 @@ selectAllClick - (Optional) Function called when the Select All button is clicke
             <!-- /ko -->
         </div>
     </div>
+    <!-- /ko -->
 </div>
 
         <!-- /ko -->
