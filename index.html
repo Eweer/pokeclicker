@@ -57452,63 +57452,55 @@ selectAllClick - (Optional) Function called when the Select All button is clicke
     <div id="routeInfoBody" class="card-body p-0 show">
         <!-- ko if: App.game.gameState === GameConstants.GameState.fighting -->
         <!-- imported from src/components/zoneExtraInfo/routeInfoTable.html -->
-<div class="table-responsive">
-    <div style="overflow: 100%;">
-        <table class="table table-sm m-0" style="width: 100%;">
-            <tbody data-bind="foreach: { data: GameHelper.chunk(4, RouteHelper.sortPokemonListByPokerusStatus(RouteHelper.getAvailablePokemonList(player.route, player.region, true))), as: 'row' }">
-                <tr data-bind="foreach: { data: row, as: 'p' }">
-                    <td class="text-center align-middle p-0"
-                        style="position: relative; min-width: 64px; border: 1px black solid;"
-                        data-bind="with: PokemonHelper.getPokemonByName(p)">
-                        <div style="position: relative; width: auto;"
-                             data-bind="style: { background: PokedexHelper.getBackgroundColors($data.name) }">
-                            <img style="width: 100%; height: 100%; filter: drop-shadow(-1px -1px rgba(34, 34, 34, 0.2)) drop-shadow(1px 1px rgba(34, 34, 34, 0.2)) drop-shadow(1px -1px rgba(34, 34, 34, 0.2)) drop-shadow(-1px 1px rgba(34, 34, 34, 0.2));"
-                                data-bind="
-                                    attr: { src: PokemonHelper.getImage($data.id, undefined, undefined, GameConstants.ShadowStatus.None) },
-                                    css: {
-                                        'pokemon-not-seen': !PokedexHelper.pokemonSeen($data.id)(),
-                                        'pokemon-seen-but-not-caught': !App.game.party.alreadyCaughtPokemonByName($data.name) && PokedexHelper.pokemonSeen($data.id)()
-                                    }"/>
-                            <img style="position: absolute; top: 2px; left: 2px; width: 16px; height: 16px;"
-                                data-bind="
-                                    visible: App.game.party.alreadyCaughtPokemonByName($data.name),
-                                    attr: { src: `assets/images/pokeball/Pokeball${App.game.party.alreadyCaughtPokemon($data.id, true) ? '-shiny' : ''}.svg` },
-                                    tooltip: {
-                                        title: $data.name,
-                                        placement: 'top',
-                                        trigger:'hover'
-                                    }"/>
-                            <div style="position:absolute; width: 20px; height: 20px; top: 0px; right: 2px;">
-                                <!-- ko if: App.game.party.alreadyCaughtPokemon($data.id) && App.game.party.getPokemon($data.id).heldItem() -->
-                                <img style="position: relative; top: 0; right: 0; width: 20px; height: 20px; filter: drop-shadow(2px 1px rgba(34, 34, 34, 0.774));"
-                                    data-bind="attr: { src: `${App.game.party.getPokemon($data.id).heldItem().image}` }"/>
-                                <!-- /ko -->
-                            </div>
-                            <div style="position:absolute; width: 40px; height: 14px; bottom: 3px; left: 50%; transform: translateX(-50%);"
-                                data-bind="
-                                    with: App.game.party.getPokemon($data.id),
-                                    tooltip: {
-                                        title: App.game.party.getPokemon($data.id)?.pokerus >= GameConstants.Pokerus.Contagious ? `EVs: ${App.game.party.getPokemon($data.id)?.evs().toLocaleString('en-US')}` : '',
-                                        placement: 'bottom',
-                                        trigger: 'hover'
-                                    }">
-                                <!-- ko if: $data.pokerus >= GameConstants.Pokerus.Resistant -->
-                                <img style="position:absolute; top: 0; left: 0; outline: 1px solid black;"
-                                    src="assets/images/breeding/pokerus/Resistant.png" />
-                                <!-- /ko -->
-                                <!-- ko if: $data.pokerus == GameConstants.Pokerus.Contagious -->
-                                <img style="position:absolute; top: 0; left: 0; outline: 1px solid black;"
-                                    src="assets/images/breeding/pokerus/Contagious.png" />
-                                <img style="position:absolute; top: 0; left: 0; outline: 1px solid black;"
-                                    data-bind="style: { clipPath: `inset(0 0 0 ${$data.evs() * 2}%)` }"
-                                    src="assets/images/breeding/pokerus/Infected.png"/>
-                                <!-- /ko -->
-                            </div>
-                        </div>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+<div style="display: flex; flex-wrap: wrap;"
+    data-bind="foreach: { data: RouteHelper.sortPokemonListByPokerusStatus(RouteHelper.getAvailablePokemonList(player.route, player.region, true)), as: 'p' }">
+    <div style="position: relative; width: 12.5%; min-width: 71px; border: 1px black solid;"
+         data-bind="
+            with: PokemonHelper.getPokemonByName(p),
+            style: { background: PokedexHelper.getBackgroundColors($data.name) };"
+    >
+        <img style="width: 100%; height: 100%; filter: drop-shadow(-1px -1px rgba(34, 34, 34, 0.2)) drop-shadow(1px 1px rgba(34, 34, 34, 0.2)) drop-shadow(1px -1px rgba(34, 34, 34, 0.2)) drop-shadow(-1px 1px rgba(34, 34, 34, 0.2));"
+            data-bind="
+                attr: { src: PokemonHelper.getImage($data.id, undefined, undefined, GameConstants.ShadowStatus.None) },
+                css: {
+                    'pokemon-not-seen': !PokedexHelper.pokemonSeen($data.id)(),
+                    'pokemon-seen-but-not-caught': !App.game.party.alreadyCaughtPokemonByName($data.name) && PokedexHelper.pokemonSeen($data.id)()
+                }"/>
+        <img style="position: absolute; top: 2px; left: 2px; width: 16px; height: 16px;"
+            data-bind="
+                visible: App.game.party.alreadyCaughtPokemonByName($data.name),
+                attr: { src: `assets/images/pokeball/Pokeball${App.game.party.alreadyCaughtPokemon($data.id, true) ? '-shiny' : ''}.svg` },
+                tooltip: {
+                    title: $data.name,
+                    placement: 'top',
+                    trigger:'hover'
+                }"/>
+        <div style="position:absolute; width: 20px; height: 20px; top: 0px; right: 2px;">
+            <!-- ko if: App.game.party.alreadyCaughtPokemon($data.id) && App.game.party.getPokemon($data.id).heldItem() -->
+            <img style="position: relative; top: 0; right: 0; width: 20px; height: 20px; filter: drop-shadow(2px 1px rgba(34, 34, 34, 0.774));"
+                data-bind="attr: { src: `${App.game.party.getPokemon($data.id).heldItem().image}` }"/>
+            <!-- /ko -->
+        </div>
+        <div style="position:absolute; width: 40px; height: 14px; bottom: 3px; left: 50%; transform: translateX(-50%);"
+            data-bind="
+                with: App.game.party.getPokemon($data.id),
+                tooltip: {
+                    title: App.game.party.getPokemon($data.id)?.pokerus >= GameConstants.Pokerus.Contagious ? `EVs: ${App.game.party.getPokemon($data.id)?.evs().toLocaleString('en-US')}` : '',
+                    placement: 'bottom',
+                    trigger: 'hover'
+                }">
+            <!-- ko if: $data.pokerus >= GameConstants.Pokerus.Resistant -->
+            <img style="position:absolute; top: 0; left: 0; outline: 1px solid black;"
+                src="assets/images/breeding/pokerus/Resistant.png" />
+            <!-- /ko -->
+            <!-- ko if: $data.pokerus == GameConstants.Pokerus.Contagious -->
+            <img style="position:absolute; top: 0; left: 0; outline: 1px solid black;"
+                src="assets/images/breeding/pokerus/Contagious.png" />
+            <img style="position:absolute; top: 0; left: 0; outline: 1px solid black;"
+                data-bind="style: { clipPath: `inset(0 0 0 ${$data.evs() * 2}%)` }"
+                src="assets/images/breeding/pokerus/Infected.png"/>
+            <!-- /ko -->
+        </div>
     </div>
 </div>
 
