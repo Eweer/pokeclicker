@@ -1,7 +1,7 @@
 {
   "name": "pokeclicker",
   "version": "0.10.25",
-  "description": "PokéClicker repository",
+  "description": "PokéClicker (derived) repository",
   "main": "index.js",
   "scripts": {
     "start": "cross-env NODE_ENV=development gulp",
@@ -22,19 +22,19 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/pokeclicker/pokeclicker.git"
+    "url": "git+https://github.com/Eweer/pokeclicker.git"
   },
   "babel": {
     "presets": [
       "@babel/preset-env"
     ]
   },
-  "author": "RedSparr0w",
+  "author": "Eweer",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/pokeclicker/pokeclicker/issues"
+    "url": "https://github.com/Eweer/pokeclicker/issues"
   },
-  "homepage": "https://github.com/pokeclicker/pokeclicker#readme",
+  "homepage": "https://github.com/Eweer/pokeclicker#readme",
   "devDependencies": {
     "@babel/core": "^7.0.0",
     "@babel/preset-env": "^7.0.0",
