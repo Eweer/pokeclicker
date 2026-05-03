@@ -179,6 +179,21 @@
                     </div>
                 </div>
                 <div class="flex-grow-1 text-right">
+                    <div class="btn-group dropup">
+                        <button type="button" class="btn btn-sm btn-primary dropdown-toggle px-1 py-0"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                                data-bind="text: QuestHelper.excludeQuestCategory()== `` ? `Select type to exclude` : QuestHelper.excludeQuestCategory()"
+                        ></button>
+                        <div class="dropdown-menu dropdown-menu-right"
+                             data-bind="foreach: QuestHelper.getAllQuestsCategories()">
+                            <button class="dropdown-item" type="button"
+                                    data-bind="
+                                        click: () => QuestHelper.excludeQuestCategory(QuestHelper.excludeQuestCategory() === $data ? '' : $data),
+                                        css: { 'active': QuestHelper.excludeQuestCategory() === $data },
+                                        text: $data
+                            "></button>
+                        </div>
+                    </div>
                     <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
                 </div>
             </div>

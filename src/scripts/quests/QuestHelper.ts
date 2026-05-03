@@ -40,6 +40,14 @@ class QuestHelper {
         HarvestBerriesQuest,
     }
 
+    public static excludeQuestCategory: KnockoutObservable<string> = ko.observable('');
+
+    public static getAllQuestsCategories(): string[] {
+        return Object.entries(QuestHelper.quests).map((k) => {
+            return k[0].replace(/([A-Z])/g, ' $1').trim().slice(0, -1 * 'Quest'.length);
+        });
+    }
+
     public static createQuest(questType: string, data?: any[]): Quest {
         if (!this.quests[questType]) {
             console.error(`Error: Invalid quest type - ${questType}.`);
@@ -59,7 +67,7 @@ class QuestHelper {
         SeededRand.seed(+seed);
 
         // Only use unlocked quest types
-        const QuestTypes = new Set(Object.entries(this.quests).filter(([key, quest]) => quest.canComplete()).map(([key]) => key));
+        const QuestTypes = new Set(Object.entries(this.quests).filter(([key, quest]) => key != this.excludeQuestCategory() && quest.canComplete()).map(([key]) => key));
         while (quests.length < amount && QuestTypes.size) {
             const questType = SeededRand.fromArray(Array.from(QuestTypes));
             if (uniqueQuestTypes) {
