@@ -1,4 +1,5 @@
 <div id="currencyContainer" class="card sortable border-secondary mb-3" data-bind="visible: player.regionStarters[GameConstants.Region.kanto]() != GameConstants.Starter.None">
+    <div class="card-header p-0" style="height: 0; overflow: hidden;"></div>
     <div id="currencyBody" class="card-body p-0 show">
         <div class="currency-wrapper d-flex flex-wrap justify-content-around p-1" data-bind="css: { 'short-currencies': Settings.getSetting('currencyMainDisplayReduced').observableValue() }">
             <div data-bind="template: { name: 'currency-display-template', data: { currency: GameConstants.Currency.money, tooltip: 'Pokédollars<br /><br />Gained by defeating Pokémon and trainers in battle.' } }"></div>
