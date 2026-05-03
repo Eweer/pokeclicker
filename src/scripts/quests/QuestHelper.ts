@@ -44,7 +44,7 @@ class QuestHelper {
 
     public static getAllQuestsCategories(): string[] {
         return Object.entries(QuestHelper.quests).map((k) => {
-            return k[0].replace(/([A-Z])/g, ' $1').trim().slice(0, -1 * 'Quest'.length);
+            return k[0].replace(/([A-Z])/g, ' $1').trim().slice(0, -1 * 'Quest'.length).trim();
         });
     }
 
@@ -67,7 +67,7 @@ class QuestHelper {
         SeededRand.seed(+seed);
 
         // Only use unlocked quest types
-        const QuestTypes = new Set(Object.entries(this.quests).filter(([key, quest]) => key != this.excludeQuestCategory() && quest.canComplete()).map(([key]) => key));
+        const QuestTypes = new Set(Object.entries(this.quests).filter(([key, quest]) => key != (`${this.excludeQuestCategory()}Quest`).replace(/\s/g, '') && quest.canComplete()).map(([key]) => key));
         while (quests.length < amount && QuestTypes.size) {
             const questType = SeededRand.fromArray(Array.from(QuestTypes));
             if (uniqueQuestTypes) {
