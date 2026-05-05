@@ -4,6 +4,7 @@ import NotificationConstants from '../notifications/NotificationConstants';
 import Notifier from '../notifications/Notifier';
 import { PokemonNameType } from '../pokemons/PokemonNameType';
 import { StoneType } from '../GameConstants';
+import PokerusIndicatingItem from './PokerusIndicatingItem';
 
 export default class ItemHandler {
     public static stoneSelected: Observable<string> = ko.observable(StoneType[0]);
@@ -59,6 +60,28 @@ export default class ItemHandler {
         const input = $('input[name="amountOfItems"]');
         const newVal = (parseInt(input.val().toString(), 10) || 0) + n;
         input.val(newVal > 1 ? newVal : 1).change();
+    }
+
+    public static getStonesList() {
+        return Object.keys(StoneType)
+            .filter(stone => +stone !== +stone && stone !== 'None')
+            .map(k => ItemList[k])
+            .sort((a, b) => {
+                const iA = a as unknown as PokerusIndicatingItem;
+                const iB = b as unknown as PokerusIndicatingItem;
+
+                const statusA = iA.getCaughtStatus();
+                const statusB = iB.getCaughtStatus();
+
+                if (statusA !== statusB) return statusA - statusB;
+
+                const resistA = iA.getPercentUntilResistant();
+                const resistB = iB.getPercentUntilResistant();
+
+                if (resistA !== resistB) return resistB - resistA;
+
+                return (player.itemList[b.saveName]() ?? 0) - (player.itemList[a.saveName]() ?? 0);
+            });
     }
 
     public static useStones() {

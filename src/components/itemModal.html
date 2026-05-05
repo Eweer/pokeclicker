@@ -25,22 +25,23 @@
                             <!-- Evo items -->
                             <div class="col-lg-6 col-12 collapse dont-collapse-lg justify-content-center" id="evo-item-list">
                                 <h4>Evolution Items</h4>
-                                <div class="scrolling-div" data-bind="foreach: Object.keys(GameConstants.StoneType).filter(stone => isNaN(stone) && stone !== 'None')">
+                                <div class="scrolling-div"
+                                     data-bind="foreach: ItemHandler.getStonesList()">
                                     <div class="col-12 evolutionListItem">
                                         <button class="btn btn-secondary smallButton list-group-item-action pl-2"
-                                                data-bind="css:{'item-selected': ItemHandler.stoneSelected() === $data},
-                                                    click: function(){ ItemHandler.stoneSelected($data); ItemHandler.pokemonSelected('')},
-                                                    visible: ItemList[$data].unlockedRegion <= player.highestRegion() || player.amountOfItem($data) > 0">
+                                                data-bind="css:{'item-selected': ItemHandler.stoneSelected() === $data.name},
+                                                    click: function(){ ItemHandler.stoneSelected($data.name); ItemHandler.pokemonSelected('')},
+                                                    visible: $data.unlockedRegion <= player.highestRegion()">
                                             <div class="d-flex align-items-center">
-                                                <img class="mr-3" data-bind="attr: {src: ItemList[$data].image }" style="max-width: 32px;">
-                                                <div class="flex-grow-1 mr-1" data-bind="text: ItemList[$data].displayName"></div>
-                                                <div class="mr-1" data-bind="text: player.itemList[$data]().toLocaleString('en-US')"></div>
-                                                <!-- ko if: ItemList[$data] instanceof CaughtIndicatingItem -->
-                                                <div class="mr-1" data-bind="template: { name: 'caughtStatusTemplate', data: {'status': ItemList[$data].getCaughtStatus()}}"></div>
+                                                <img class="mr-3" data-bind="attr: {src: $data.image }" style="max-width: 32px;">
+                                                <div class="flex-grow-1 mr-1" data-bind="text: $data.displayName"></div>
+                                                <div class="mr-1" data-bind="text: player.itemList[$data.saveName]().toLocaleString('en-US')"></div>
+                                                <!-- ko if: $data instanceof CaughtIndicatingItem -->
+                                                <div class="mr-1" data-bind="template: { name: 'caughtStatusTemplate', data: {'status': $data.getCaughtStatus()}}"></div>
                                                 <!-- /ko -->
                                                 <div data-bind="template: { name: 'pokerusStatusTemplate', data: {
-                                                    'pokerus': ItemList[$data].getPokerusStatus(),
-                                                    'evsProgress': ItemList[$data].getPokerusProgress() }}"></div>
+                                                    'pokerus': $data.getPokerusStatus(),
+                                                    'evsProgress': $data.getPokerusProgress() }}"></div>
                                             </div>
                                         </button>
                                     </div>

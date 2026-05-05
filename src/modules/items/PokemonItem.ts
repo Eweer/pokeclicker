@@ -88,6 +88,11 @@ export default class PokemonItem extends PokerusIndicatingItem {
         return evs >= 50 ? 'Already resistant!' : `EVs: ${evs.toLocaleString('en-US')} / 50`;
     }
 
+    getPercentUntilResistant(): number {
+        const evs = PartyController.getEvsByName(this.type);
+        return Math.min(50, Math.max(0, evs)) / 50;
+    }
+
     showBagAmount() {
         return false;
     }
