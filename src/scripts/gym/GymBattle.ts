@@ -36,6 +36,9 @@ class GymBattle extends Battle {
                 if (App.game.gameState == GameConstants.GameState.gym) {
                     GymBattle.clickAttack();
                 }
+                if (App.game.gameState == GameConstants.GameState.temporaryBattle) {
+                    TemporaryBattleBattle.clickAttack();
+                }
             }, 50);
             this.shouldAutoClick(true);
         }
