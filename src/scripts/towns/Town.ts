@@ -67,7 +67,16 @@ class Town implements TmpTownType {
     }
 
     public getNonStandardShopItems() {
-        return this.content.filter((c): c is Shop => c instanceof Shop).flatMap(s => s.getExtraItems());
+        const genericItems = this.content.filter((c): c is Shop => c instanceof Shop && c.isUnlocked()).flatMap(s => s.getExtraItems()).filter(i => {
+            if (i instanceof QuestItem) {
+                return i.isActive();
+            }
+            return i.isAvailable() && !i.isSoldOut();
+        });
+        const berryTrades = GameConstants.BerryTraderLocations[this.name] != null
+            ? BerryDeal.list[GameConstants.BerryTraderLocations[this.name]]().flatMap((d: BerryDeal) => d.item.itemType)
+            : [];
+        return [...genericItems, ...berryTrades];
     }
 }
 
