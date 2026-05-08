@@ -174,6 +174,11 @@ class Pokeballs implements Feature {
         })?.ball() ?? GameConstants.Pokeball.None;
     }
 
+    public getPokeballForBasePokemonByName(name: PokemonNameType, isShadow: boolean, origEncounterType: EncounterType): GameConstants.Pokeball {
+        const pokemonId = PokemonHelper.getPokemonByName(name).id;
+        return this.getPokeballForBasePokemon(pokemonId, isShadow, origEncounterType);
+    }
+
     /**
      * Checks the players preferences to see what pokéball needs to be used on the next throw.
      * Checks from the players pref to the most basic ball to see if the player has any.

@@ -20,7 +20,7 @@
                 }"/>
         <div style="position:absolute; width: 20px; height: 20px; top: 0px; right: 2px;">
             <!-- ko if: App.game.party.alreadyCaughtPokemon($data.id) && App.game.party.getPokemon($data.id).heldItem() -->
-            <img style="position: relative; top: 0; right: 0; width: 20px; height: 20px; filter: drop-shadow(2px 1px rgba(34, 34, 34, 0.774));"
+            <img style="position: relative; top: 0; right: 0; width: 20px; height: 20px; filter: drop-shadow(-1px -1px rgba(34, 34, 34, 0.2)) drop-shadow(1px 1px rgba(34, 34, 34, 0.2)) drop-shadow(1px -1px rgba(34, 34, 34, 0.2)) drop-shadow(-1px 1px rgba(34, 34, 34, 0.2));"
                 data-bind="attr: { src: `${App.game.party.getPokemon($data.id).heldItem().image}` }"/>
             <!-- /ko -->
         </div>
@@ -33,13 +33,13 @@
                     trigger: 'hover'
                 }">
             <!-- ko if: $data.pokerus >= GameConstants.Pokerus.Resistant -->
-            <img style="position:absolute; top: 0; left: 0; outline: 1px solid black;"
+            <img style="position:absolute; top: 0; left: 0; filter: drop-shadow(-1px -1px rgba(34, 34, 34, 0.2)) drop-shadow(1px 1px rgba(34, 34, 34, 0.2)) drop-shadow(1px -1px rgba(34, 34, 34, 0.2)) drop-shadow(-1px 1px rgba(34, 34, 34, 0.2));"
                 src="assets/images/breeding/pokerus/Resistant.png" />
             <!-- /ko -->
             <!-- ko if: $data.pokerus == GameConstants.Pokerus.Contagious -->
-            <img style="position:absolute; top: 0; left: 0; outline: 1px solid black;"
+            <img style="position:absolute; top: 0; left: 0; filter: drop-shadow(-1px -1px rgba(34, 34, 34, 0.2)) drop-shadow(1px 1px rgba(34, 34, 34, 0.2)) drop-shadow(1px -1px rgba(34, 34, 34, 0.2)) drop-shadow(-1px 1px rgba(34, 34, 34, 0.2));"
                 src="assets/images/breeding/pokerus/Contagious.png" />
-            <img style="position:absolute; top: 0; left: 0; outline: 1px solid black;"
+            <img style="position:absolute; top: 0; left: 0; filter: drop-shadow(-1px -1px rgba(34, 34, 34, 0.2)) drop-shadow(1px 1px rgba(34, 34, 34, 0.2)) drop-shadow(1px -1px rgba(34, 34, 34, 0.2)) drop-shadow(-1px 1px rgba(34, 34, 34, 0.2));"
                 data-bind="style: { clipPath: `inset(0 0 0 ${$data.evs() * 2}%)` }"
                 src="assets/images/breeding/pokerus/Infected.png"/>
             <!-- /ko -->
