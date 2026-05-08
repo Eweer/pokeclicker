@@ -57536,7 +57536,7 @@ selectAllClick - (Optional) Function called when the Select All button is clicke
                 }"/>
         <div style="position:absolute; width: 20px; height: 20px; top: 0px; right: 2px;">
             <!-- ko if: App.game.party.alreadyCaughtPokemon($data.id) && App.game.party.getPokemon($data.id).heldItem() -->
-            <img style="position: relative; top: 0; right: 0; width: 20px; height: 20px; filter: drop-shadow(2px 1px rgba(34, 34, 34, 0.774));"
+            <img style="position: relative; top: 0; right: 0; width: 20px; height: 20px; filter: drop-shadow(-1px -1px rgba(34, 34, 34, 0.2)) drop-shadow(1px 1px rgba(34, 34, 34, 0.2)) drop-shadow(1px -1px rgba(34, 34, 34, 0.2)) drop-shadow(-1px 1px rgba(34, 34, 34, 0.2));"
                 data-bind="attr: { src: `${App.game.party.getPokemon($data.id).heldItem().image}` }"/>
             <!-- /ko -->
         </div>
@@ -57549,13 +57549,13 @@ selectAllClick - (Optional) Function called when the Select All button is clicke
                     trigger: 'hover'
                 }">
             <!-- ko if: $data.pokerus >= GameConstants.Pokerus.Resistant -->
-            <img style="position:absolute; top: 0; left: 0; outline: 1px solid black;"
+            <img style="position:absolute; top: 0; left: 0; filter: drop-shadow(-1px -1px rgba(34, 34, 34, 0.2)) drop-shadow(1px 1px rgba(34, 34, 34, 0.2)) drop-shadow(1px -1px rgba(34, 34, 34, 0.2)) drop-shadow(-1px 1px rgba(34, 34, 34, 0.2));"
                 src="assets/images/breeding/pokerus/Resistant.png" />
             <!-- /ko -->
             <!-- ko if: $data.pokerus == GameConstants.Pokerus.Contagious -->
-            <img style="position:absolute; top: 0; left: 0; outline: 1px solid black;"
+            <img style="position:absolute; top: 0; left: 0; filter: drop-shadow(-1px -1px rgba(34, 34, 34, 0.2)) drop-shadow(1px 1px rgba(34, 34, 34, 0.2)) drop-shadow(1px -1px rgba(34, 34, 34, 0.2)) drop-shadow(-1px 1px rgba(34, 34, 34, 0.2));"
                 src="assets/images/breeding/pokerus/Contagious.png" />
-            <img style="position:absolute; top: 0; left: 0; outline: 1px solid black;"
+            <img style="position:absolute; top: 0; left: 0; filter: drop-shadow(-1px -1px rgba(34, 34, 34, 0.2)) drop-shadow(1px 1px rgba(34, 34, 34, 0.2)) drop-shadow(1px -1px rgba(34, 34, 34, 0.2)) drop-shadow(-1px 1px rgba(34, 34, 34, 0.2));"
                 data-bind="style: { clipPath: `inset(0 0 0 ${$data.evs() * 2}%)` }"
                 src="assets/images/breeding/pokerus/Infected.png"/>
             <!-- /ko -->
@@ -57567,66 +57567,90 @@ selectAllClick - (Optional) Function called when the Select All button is clicke
         <!-- /ko -->
         <!-- ko if: App.game.gameState === GameConstants.GameState.dungeon -->
         <!-- imported from src/components/zoneExtraInfo/dungeonInfoTable.html -->
-<div class="table-responsive">
-    <div style="overflow: 100%;">
-        <table class="table table-sm m-0" style="width: 100%;">
-            <thead>
-                <tr>
-                    <th style="border-left: 2px solid #6c6c6c;">Pkmn</th>
-                    <th colspan="2" style="border-right: 2px solid #6c6c6c;">Status</th>
-                    <th style="border-left: 2px solid #6c6c6c;">Pkmn</th>
-                    <th colspan="2" style="border-right: 2px solid #6c6c6c;">Status</th>
-                </tr>
-            </thead>
-            <tbody data-bind="foreach: { data: GameHelper.chunk(2, DungeonRunner.dungeon.allEncounterGrid.filter(i => !i.hide && !i.shadowTrainer)), as: 'row' }">
-                <tr data-bind="foreach: { data: row, as: 'p' }">
-                    <td class="text-center align-middle p-0"
-                        style="position: relative; width: 48px; border-left: 2px solid #6c6c6c; border-right: none;"
-                        data-bind="style: { background: PokedexHelper.getBackgroundColors($data.pokemonName) }">
-                        <img style="width: 48px; height: 48px;  filter: drop-shadow(-1px -1px rgba(34, 34, 34, 0.2)) drop-shadow(1px 1px rgba(34, 34, 34, 0.2)) drop-shadow(1px -1px rgba(34, 34, 34, 0.2)) drop-shadow(-1px 1px rgba(34, 34, 34, 0.2));"
-                            data-bind="attr: { src: $data.image },
-                            css: {
-                                'pokemon-not-seen': !PokedexHelper.pokemonSeenByName($data.pokemonName)(),
-                                'pokemon-seen-but-not-caught': $data.uncaught && PokedexHelper.pokemonSeenByName($data.pokemonName)()
-                            }"/>
-                        <!-- ko if: $data.isBoss -->
-                        <img class="boss"
-                            style="position: absolute; bottom: 0px; right: 0px; width: 16px; height: 16 px; filter: drop-shadow(-1px -1px rgba(34, 34, 34, 0.2)) drop-shadow(1px 1px rgba(34, 34, 34, 0.2)) drop-shadow(1px -1px rgba(34, 34, 34, 0.2)) drop-shadow(-1px 1px rgba(34, 34, 34, 0.2));"
-                            src="assets/images/dungeons/boss.svg"/>
-                        <!-- /ko -->
-                        <!-- ko if: $data.mimic -->
-                        <img class="boss"
-                             style="position: absolute; bottom: 2px; right: 0px; width: 16px; height: auto; filter: drop-shadow(-1px -1px rgba(34, 34, 34, 0.774));"
-                             data-bind="attr: { src: `assets/images/dungeons/chest-${$data.mimicTier}.png` },
-                             tooltip: {
-                                title: GameConstants.camelCaseToString($data.mimicTier),
-                                trigger: 'hover'
-                             }"/>
-                        <!-- /ko -->
-                        <!-- ko if: App.game.party.alreadyCaughtPokemonByName($data.pokemonName) && App.game.party.getPokemonByName($data.pokemonName).heldItem() -->
-                        <img style="position: absolute; top: 0; right: 0; width: 16px; height: 16 px;  filter: drop-shadow(2px 1px rgba(34, 34, 34, 0.774));"
-                             data-bind="attr: { src: `${App.game.party.getPokemonByName($data.pokemonName).heldItem().image}` }"/>
-                        <!-- /ko -->
-                    </td>
-                    <td class="text-center align-middle p-1" style="border-right: none;">
-                        <img style="width: 18px; height: 18px;"
-                            data-bind="visible: !$data.uncaught,
-                            attr: { src: `assets/images/pokeball/Pokeball${$data.shiny ? '-shiny' : ''}.svg` }"/>
-                        <span data-bind="visible: $data.uncaught,
-                            text: `${PokemonFactory.catchRateHelper(PokemonHelper.getPokemonByName($data.pokemonName).catchRate)}%`"></span>
-                    </td>
-                    <td class="text-center align-middle p-1" style="border-right: 2px solid #6c6c6c;">
-                        <img style="width: 32px;"
-                            data-bind="visible: parseInt($data.EVs.replace('EVs: ', '').replace(',', '')) >= 50,
-                            attr: { src: $data.pkrsImage }"/>
-                        <span data-bind="visible: 50 > parseInt($data.EVs.replace('EVs: ', '').replace(',', '')) && $data.pkrsImage,
-                            text: `${parseInt($data.EVs.replace('EVs: ', ''))}/50`"></span>
-                        <span data-bind="visible: !$data.pkrsImage">-</span>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+<div style="display: flex; flex-wrap: wrap;"
+     data-bind="foreach: { data: DungeonRunner.dungeon.allEncounterGrid.filter(i => !i.hide && !i.shadowTrainer), as: 'encounter' }">
+     <!-- ko with: PokemonHelper.getPokemonByName(encounter.pokemonName), as: 'pkmn' -->
+    <div style="position: relative; width: 12.5%; min-width: 71px; border: 1px black solid;"
+         data-bind="style: { background: PokedexHelper.getBackgroundColors(pkmn.name) };">
+        <img style="width: 100%; height: 100%; filter: drop-shadow(-1px -1px rgba(34, 34, 34, 0.2)) drop-shadow(1px 1px rgba(34, 34, 34, 0.2)) drop-shadow(1px -1px rgba(34, 34, 34, 0.2)) drop-shadow(-1px 1px rgba(34, 34, 34, 0.2));"
+            data-bind="
+                attr: { src: encounter.image },
+                css: {
+                    'pokemon-not-seen': !PokedexHelper.pokemonSeen(pkmn.id)(),
+                    'pokemon-seen-but-not-caught': encounter.uncaught && PokedexHelper.pokemonSeen(pkmn.id)()
+                }"/>
+        <div style="position:absolute; width: 20px; height: 20px; top: 0px; right: 2px;">
+            <!-- ko if: !encounter.uncaught && App.game.party.getPokemon(pkmn.id).heldItem() -->
+            <img style="position: relative; top: 0; right: 0; width: 20px; height: 20px; filter: drop-shadow(-1px -1px rgba(34, 34, 34, 0.2)) drop-shadow(1px 1px rgba(34, 34, 34, 0.2)) drop-shadow(1px -1px rgba(34, 34, 34, 0.2)) drop-shadow(-1px 1px rgba(34, 34, 34, 0.2));"
+                data-bind="attr: { src: `${App.game.party.getPokemon(pkmn.id).heldItem().image}` }"/>
+            <!-- /ko -->
+        </div>
+        <div style="position:absolute; width: 40px; height: 14px; bottom: 3px;"
+            data-bind="
+                with: App.game.party.getPokemon(pkmn.id),
+                style: {
+                    left: encounter.isBoss || encounter.mimic ? '3px' : '50%',
+                    transform: encounter.isBoss || encounter.mimic ? 'none' : 'translate(-50%)'
+                },
+                tooltip: {
+                    title: App.game.party.getPokemon($data.id)?.pokerus >= GameConstants.Pokerus.Contagious ? `EVs: ${App.game.party.getPokemon($data.id)?.evs().toLocaleString('en-US')}` : '',
+                    placement: 'bottom',
+                    trigger: 'hover'
+                }">
+            <!-- ko if: $data.pokerus >= GameConstants.Pokerus.Resistant -->
+            <img style="position:absolute; top: 0; left: 0; filter: drop-shadow(-1px -1px rgba(34, 34, 34, 0.2)) drop-shadow(1px 1px rgba(34, 34, 34, 0.2)) drop-shadow(1px -1px rgba(34, 34, 34, 0.2)) drop-shadow(-1px 1px rgba(34, 34, 34, 0.2));"
+                src="assets/images/breeding/pokerus/Resistant.png" />
+            <!-- /ko -->
+            <!-- ko if: $data.pokerus == GameConstants.Pokerus.Contagious -->
+            <img style="position:absolute; top: 0; left: 0; filter: drop-shadow(-1px -1px rgba(34, 34, 34, 0.2)) drop-shadow(1px 1px rgba(34, 34, 34, 0.2)) drop-shadow(1px -1px rgba(34, 34, 34, 0.2)) drop-shadow(-1px 1px rgba(34, 34, 34, 0.2));"
+                src="assets/images/breeding/pokerus/Contagious.png" />
+            <img style="position:absolute; top: 0; left: 0; filter: drop-shadow(-1px -1px rgba(34, 34, 34, 0.2)) drop-shadow(1px 1px rgba(34, 34, 34, 0.2)) drop-shadow(1px -1px rgba(34, 34, 34, 0.2)) drop-shadow(-1px 1px rgba(34, 34, 34, 0.2));"
+                data-bind="style: { clipPath: `inset(0 0 0 ${$data.evs() * 2}%)` }"
+                src="assets/images/breeding/pokerus/Infected.png"/>
+            <!-- /ko -->
+        </div>
+        <!-- ko if: encounter.isBoss -->
+        <img class="boss"
+            style="position: absolute; bottom: 3px; right: 3px; width: 16px; height: 16 px; filter: drop-shadow(-1px -1px rgba(34, 34, 34, 0.2)) drop-shadow(1px 1px rgba(34, 34, 34, 0.2)) drop-shadow(1px -1px rgba(34, 34, 34, 0.2)) drop-shadow(-1px 1px rgba(34, 34, 34, 0.2));"
+            src="assets/images/dungeons/boss.svg"/>
+        <img style="position: absolute; top: 2px; left: 2px; width: 16px; height: 16px;"
+            data-bind="
+                attr: { src: `assets/images/pokeball/${GameConstants.Pokeball[App.game.pokeballs.getPokeballForBasePokemon(pkmn.id, false, EncounterType.dungeonBoss)]}.svg` },
+                tooltip: {
+                    title: $data.name,
+                    placement: 'top',
+                    trigger:'hover'
+                }"/>
+        <!-- /ko -->
+        <!-- ko if: encounter.mimic -->
+        <img class="boss"
+                style="position: absolute; bottom: 2px; right: 0px; width: 16px; height: auto; filter: drop-shadow(-1px -1px rgba(34, 34, 34, 0.774));"
+                data-bind="attr: { src: `assets/images/dungeons/chest-${encounter.mimicTier}.png` },
+                tooltip: {
+                title: GameConstants.camelCaseToString(encounter.mimicTier),
+                trigger: 'hover'
+                }"/>
+        <img style="position: absolute; top: 2px; left: 2px; width: 16px; height: 16px;"
+            data-bind="
+                attr: { src: `assets/images/pokeball/${GameConstants.Pokeball[App.game.pokeballs.getPokeballForBasePokemon(pkmn.id, false, EncounterType.mimic)]}.svg` },
+                tooltip: {
+                    title: $data.name,
+                    placement: 'top',
+                    trigger:'hover'
+                }"/>
+        <!-- /ko -->
+        <!-- ko ifnot: encounter.mimic || encounter.boss -->
+        <img style="position: absolute; top: 2px; left: 2px; width: 16px; height: 16px;"
+            data-bind="
+                attr: { src: `assets/images/pokeball/${GameConstants.Pokeball[App.game.pokeballs.getPokeballForBasePokemon(pkmn.id, false, EncounterType.dungeon)]}.svg` },
+                tooltip: {
+                    title: $data.name,
+                    placement: 'top',
+                    trigger:'hover'
+                }"/>
+        <!-- /ko -->
     </div>
+    <!-- /ko -->
 </div>
 
         <!-- /ko -->
