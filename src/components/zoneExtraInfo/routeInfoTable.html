@@ -10,6 +10,12 @@
                     'pokemon-not-seen': !PokedexHelper.pokemonSeen($data.id)(),
                     'pokemon-seen-but-not-caught': !App.game.party.alreadyCaughtPokemonByName($data.name) && PokedexHelper.pokemonSeen($data.id)()
                 }"/>
+        <!-- ko if: PokedexHelper.pokemonSeen($data.id) -->
+        <a class="overlay" href="#pokemonStatisticsModal" data-toggle="modal" data-bind="
+            click: (_, event) => {
+                App.game.statistics.selectedPokemonID(pkmn.id);
+            }"></a>
+        <!-- /ko -->
         <img style="position: absolute; top: 2px; left: 2px; width: 16px; height: 16px;"
             data-bind="
                 attr: { src: `assets/images/pokeball/${GameConstants.Pokeball[App.game.pokeballs.getPokeballForBasePokemon($data.id, false, EncounterType.route)]}.svg` },
