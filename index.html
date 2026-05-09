@@ -57526,6 +57526,12 @@ selectAllClick - (Optional) Function called when the Select All button is clicke
                     'pokemon-not-seen': !PokedexHelper.pokemonSeen($data.id)(),
                     'pokemon-seen-but-not-caught': !App.game.party.alreadyCaughtPokemonByName($data.name) && PokedexHelper.pokemonSeen($data.id)()
                 }"/>
+        <!-- ko if: PokedexHelper.pokemonSeen($data.id) -->
+        <a class="overlay" href="#pokemonStatisticsModal" data-toggle="modal" data-bind="
+            click: (_, event) => {
+                App.game.statistics.selectedPokemonID(pkmn.id);
+            }"></a>
+        <!-- /ko -->
         <img style="position: absolute; top: 2px; left: 2px; width: 16px; height: 16px;"
             data-bind="
                 attr: { src: `assets/images/pokeball/${GameConstants.Pokeball[App.game.pokeballs.getPokeballForBasePokemon($data.id, false, EncounterType.route)]}.svg` },
@@ -57579,6 +57585,12 @@ selectAllClick - (Optional) Function called when the Select All button is clicke
                     'pokemon-not-seen': !PokedexHelper.pokemonSeen(pkmn.id)(),
                     'pokemon-seen-but-not-caught': encounter.uncaught && PokedexHelper.pokemonSeen(pkmn.id)()
                 }"/>
+        <!-- ko if: PokedexHelper.pokemonSeen($data.id) -->
+        <a class="overlay" href="#pokemonStatisticsModal" data-toggle="modal" data-bind="
+            click: (_, event) => {
+                App.game.statistics.selectedPokemonID(pkmn.id);
+            }"></a>
+        <!-- /ko -->
         <div style="position:absolute; width: 20px; height: 20px; top: 0px; right: 2px;">
             <!-- ko if: !encounter.uncaught && App.game.party.getPokemon(pkmn.id).heldItem() -->
             <img style="position: relative; top: 0; right: 0; width: 20px; height: 20px; filter: drop-shadow(-1px -1px rgba(34, 34, 34, 0.2)) drop-shadow(1px 1px rgba(34, 34, 34, 0.2)) drop-shadow(1px -1px rgba(34, 34, 34, 0.2)) drop-shadow(-1px 1px rgba(34, 34, 34, 0.2));"
