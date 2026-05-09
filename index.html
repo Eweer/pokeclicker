@@ -62915,9 +62915,16 @@ aria-labelledby="pokedexModalLabel">
                 </tr>
                 <!-- ko if: App.game.party.alreadyCaughtPokemon($data) -->
                 <tr>
-                  <td class="text-left align-middle">Held Item</td>
-                  <td class="text-left tight text-wrap"><code
-                      data-bind="text: App.game.party.getPokemon($data).heldItem()?.displayName || '-'"></code></td>
+                    <td class="text-left align-middle">Held Item</td>
+                    <td class="text-left tight text-wrap">
+                        <div style="position: relative;">
+                            <code data-bind="text: App.game.party.getPokemon($data).heldItem()?.displayName || '-'"></code>
+                            <a class="overlay" href="#showItemBag-addItemToSpecific" data-toggle="modal" data-bind="
+                                click: (_, event) => {
+                                    HeldItem.pokemonSelected(pokemonMap[$data].id);
+                                }"></a>
+                        </div>
+                    </td>
                 </tr>
                 <tr>
                   <td colspan="2" class="text-left tight">
@@ -63044,7 +63051,7 @@ aria-labelledby="pokedexModalLabel">
             <table class="table table-striped table-hover table-bordered table-sm m-0 mb-2">
               <thead>
                 <tr class="bg-secondary">
-                  <th colspan="2">Vitamins</th>
+                    <th colspan="2">Vitamins</th>
                 </tr>
               </thead>
               <tbody>
@@ -63070,6 +63077,40 @@ aria-labelledby="pokedexModalLabel">
       </div>
     </div>
   </div>
+</div>
+
+
+<!-- Item to Specific Modal -->
+<!-- imported from src/components/itemToSpecificPokemon.html -->
+<div class="modal fade" id="showItemBag-addItemToSpecific" role="dialog"
+     aria-labelledby="showItemBag-addItemToSpecificLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered w-auto" role="document">
+        <div class ="modal-content" style="text-align: center">
+            <div class="modal-body pt-2 p-1">
+                <div data-bind="foreach: Object.values(HeldItem.getUsableItemsByPkmn())">
+                    <div class="d-flex align-items-center flex-wrap justify-content-center">
+                        <h5 class="card-title col-12 mb-2" data-bind="text: $data.title, visible: $data.items.some(i => i.isUnlocked())"></h5>
+                        <!-- ko foreach: $data.items -->
+                        <div class="col-6 mb-2" data-bind="visible: $data.isUnlocked()">
+                            <div class="btn btn-secondary text-left w-100 px-1" style="padding-top: 1px; padding-bottom: 2px;"
+                                data-bind="template: { name: 'otherItemTemplate', data: $data.name },
+                                    click: (_, event) => {
+                                        const modal = $(event.target).closest('.modal');
+                                        const result = App.game.party.getPokemon(HeldItem.pokemonSelected()).giveHeldItem($data);
+                                        if (result instanceof Promise) {
+                                            result.then(confirmed => { if (confirmed) modal.modal('hide'); });
+                                        } else if (result) {
+                                            modal.modal('hide');
+                                        }
+                                    }">
+                            </div>
+                        </div>
+                        <!-- /ko -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 
