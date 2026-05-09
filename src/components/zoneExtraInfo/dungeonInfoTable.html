@@ -10,7 +10,7 @@
                     'pokemon-not-seen': !PokedexHelper.pokemonSeen(pkmn.id)(),
                     'pokemon-seen-but-not-caught': encounter.uncaught && PokedexHelper.pokemonSeen(pkmn.id)()
                 }"/>
-        <!-- ko if: PokedexHelper.pokemonSeen($data.id) -->
+        <!-- ko if: PokedexHelper.pokemonSeen(pkmn.id) -->
         <a class="overlay" href="#pokemonStatisticsModal" data-toggle="modal" data-bind="
             click: (_, event) => {
                 App.game.statistics.selectedPokemonID(pkmn.id);
