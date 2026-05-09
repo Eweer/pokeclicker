@@ -2,7 +2,7 @@
 
 class HeldItem extends Item {
     public static heldItemSelected: KnockoutObservable<HeldItem> = ko.observable(undefined);
-
+    public static pokemonSelected: KnockoutObservable<number> = ko.observable(undefined);
     regionUnlocked: GameConstants.Region;
 
     constructor(
@@ -16,6 +16,41 @@ class HeldItem extends Item {
         public canUse: (pokemon: PartyPokemon) => boolean) {
         super(name, basePrice, currency, shopOptions, displayName, description, 'heldItems');
         this.regionUnlocked = regionUnlocked;
+    }
+
+    public static getUsableItemsByPkmn() {
+        if (this.pokemonSelected() == undefined) {
+            return {};
+        }
+        const partyPokemon = App.game.party.getPokemon(this.pokemonSelected());
+        if (partyPokemon == undefined) {
+            return {};
+        }
+        const sortedHeldItems = Object.values(ItemList).filter((i): i is HeldItem => i instanceof HeldItem && i.canUse(partyPokemon)).sort((a: HeldItem, b: HeldItem) => {
+            return a.regionUnlocked - b.regionUnlocked;
+        });
+        return {
+            attack: {
+                title: 'Pokémon Restricted',
+                items: sortedHeldItems.filter(i => i instanceof PokemonRestrictedAttackBonusHeldItem),
+            },
+            typeRestricted: {
+                title: 'Type Restricted',
+                items: sortedHeldItems.filter(i => i instanceof TypeRestrictedAttackBonusHeldItem),
+            },
+            ev: {
+                title: 'EV Gain',
+                items: sortedHeldItems.filter(i => i instanceof EVsGainedBonusHeldItem),
+            },
+            exp: {
+                title: 'EXP Gain',
+                items: sortedHeldItems.filter(i => i instanceof ExpGainedBonusHeldItem),
+            },
+            other: {
+                title: 'Other',
+                items: sortedHeldItems.filter(i => i.constructor.name === 'AttackBonusHeldItem' || i.constructor.name === 'HeldItem'),
+            },
+        };
     }
 
     public static getSortedHeldItems() {

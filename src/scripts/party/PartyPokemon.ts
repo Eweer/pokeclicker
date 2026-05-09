@@ -553,26 +553,26 @@ class PartyPokemon implements Saveable, TmpPartyPokemonType {
         return true;
     });
 
-    public giveHeldItem = (heldItem: HeldItem): void => {
+    public giveHeldItem = (heldItem: HeldItem) => {
         if (!this.heldItem() || heldItem.name != this.heldItem().name) {
             if (heldItem && !heldItem.canUse(this)) {
                 Notifier.notify({
                     message: `This Pokémon cannot use ${heldItem.displayName}.`,
                     type: NotificationConstants.NotificationOption.warning,
                 });
-                return;
+                return false;
             }
             if (player.amountOfItem(heldItem.name) < 1) {
                 Notifier.notify({
                     message: `You don't have any ${heldItem.displayName} left.`,
                     type: NotificationConstants.NotificationOption.warning,
                 });
-                return;
+                return false;
             }
         }
 
         if (this.heldItem() && Settings.getSetting('confirmChangeHeldItem').value) {
-            Notifier.confirm({
+            return Notifier.confirm({
                 title: 'Remove held item',
                 message: 'Held items are one time use only.\nRemoved items will be lost.\nAre you sure you want to remove it?',
                 confirm: 'Remove',
@@ -581,9 +581,11 @@ class PartyPokemon implements Saveable, TmpPartyPokemonType {
                 if (confirmed) {
                     this.addOrRemoveHeldItem(heldItem);
                 }
+                return confirmed;
             });
         } else { // Notifier.confirm is async
             this.addOrRemoveHeldItem(heldItem);
+            return true;
         }
     }
 
