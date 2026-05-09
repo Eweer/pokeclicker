@@ -39,7 +39,8 @@ class RouteHelper {
     }
 
     public static sortPokemonListByPokerusStatus(pokemonList: PokemonNameType[]): PokemonNameType[] {
-        const result: PokemonNameType[] = pokemonList;
+        const uniquePokemon = new Set(pokemonList);
+        const result: PokemonNameType[] = [...uniquePokemon];
         result.sort((a, b) => {
             const aPokerus = App.game.party.getPokemonByName(a)?.pokerus || 0;
             const bPokerus = App.game.party.getPokemonByName(b)?.pokerus || 0;
