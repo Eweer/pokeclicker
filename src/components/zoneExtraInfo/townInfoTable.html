@@ -1,6 +1,6 @@
-<div style="display: flex; flex-wrap: wrap;"
+<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));"
      data-bind="foreach: { data: GameHelper.filterUniqueBy(player.town.getNonStandardShopItems(), `name`).filter(i => i.isAvailable()) }">
-    <div style="position: relative; width: 10%; min-width: 56px; padding-bottom: 8px; padding-top: 8px;">
+    <div style="position: relative; padding-bottom: 8px; padding-top: 8px;">
         <img style="width: 10%; min-width: 56px"
             data-bind="
                 attr: { src: `${$data.image}` },
