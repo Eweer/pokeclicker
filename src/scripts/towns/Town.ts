@@ -74,9 +74,61 @@ class Town implements TmpTownType {
             return i.isAvailable() && !i.isSoldOut();
         });
         const berryTrades = GameConstants.BerryTraderLocations[this.name] != null
-            ? BerryDeal.list[GameConstants.BerryTraderLocations[this.name]]().flatMap((d: BerryDeal) => d.item.itemType)
+            ? BerryDeal.list[GameConstants.BerryTraderLocations[this.name]]()
             : [];
-        return [...genericItems, ...berryTrades];
+        type Price = {
+            currency: string;
+            price: number;
+        }
+        type PriceTag = {
+            price: Price[];
+            amount: number;
+        }
+        type GroupedItem = {
+            name: string;
+            image: string;
+            priceTag: PriceTag[];
+            tooltip: string;
+            item: Item;
+        }
+        const ret: GroupedItem[] = [];
+        for (const item of genericItems) {
+            const currentItem = ret.find(i => i.item.name === item.name);
+            const cost: Price[] = [{currency: `assets/images/currency/${GameConstants.Currency[item.currency]}.svg`, price: item.totalPrice(1)}];
+            const priceTag: PriceTag = { price: cost, amount: 1 };
+            if (currentItem) {
+                currentItem.priceTag.push(priceTag);
+            } else {
+                ret.push({
+                    name: item.name,
+                    image: item.image,
+                    priceTag: [priceTag],
+                    tooltip: item.shopTooltip,
+                    item: item,
+                });
+            }
+        }
+        for (const trade of berryTrades) {
+            const cost: Price[] = [];
+            for (const berry of trade.berries) {
+                cost.push({currency: FarmController.getBerryImage(berry.berryType), price: berry.amount});
+            }
+            const priceTag: PriceTag = { price: cost, amount: trade.item.amount };
+            const item = trade.item.itemType;
+            const currentItem = ret.find(i => i.item.name === item.name);
+            if (currentItem) {
+                currentItem.priceTag.push(priceTag);
+            } else {
+                ret.push({
+                    name: item.name,
+                    image: item.image,
+                    priceTag: [priceTag],
+                    tooltip: item.shopTooltip,
+                    item: item,
+                });
+            }
+        }
+        return ret;
     }
 }
 
