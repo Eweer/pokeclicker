@@ -57669,29 +57669,41 @@ selectAllClick - (Optional) Function called when the Select All button is clicke
         <!-- ko if: App.game.gameState === GameConstants.GameState.town -->
         <!-- imported from src/components/zoneExtraInfo/townInfoTable.html -->
 <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));"
-     data-bind="foreach: { data: GameHelper.filterUniqueBy(player.town.getNonStandardShopItems(), `name`).filter(i => i.isAvailable()) }">
+     data-bind="foreach: { data: GameHelper.filterUniqueBy(player.town.getNonStandardShopItems(), `name`) }">
     <div style="position: relative; padding-bottom: 8px; padding-top: 8px;">
         <img style="width: 10%; min-width: 56px"
             data-bind="
                 attr: { src: `${$data.image}` },
                 tooltip: {
-                    title: $data.shopTooltip,
+                    title: $data.tooltip,
                     trigger: 'hover',
                     placement:'bottom',
                     boundary: 'viewport',
                     html: true
                 }"/>
         <div style="position:absolute; top: 0px; left: 0px; width: 100%; height: 100%">
-            <!-- ko if: $data instanceof PokemonItem -->
+            <div style="position:absolute; top: 12px; right: 3px; display: flex; flex-direction: row-reverse; gap: 2px;"
+                data-bind="
+                    tooltip: {
+                        html: true,
+                        title: $data.priceTag.map(t => t.price.map(p => `${p.price.toLocaleString('en-US')} <img src='${p.currency}' height='20px'>`).join(' + ') + ` → ${t.amount}x`).join('<br>'),
+                        trigger: 'hover',
+                        placement: 'top'
+                    }">
+                <!-- ko foreach: { data: $data.priceTag, as: '$trade' }-->
+                <img src="" height="21px" style="margin-left: -15px;" data-bind="attr: { src: $trade.price[0].currency }">
+                <!-- /ko -->
+            </div>
+            <!-- ko if: $data.item instanceof PokemonItem -->
             <span style="position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%);"
                   data-bind="template: { name: 'pokerusStatusTemplate', data: {
-                      'pokerus': $data.getPokerusStatus(),
+                      'pokerus': $data.item.getPokerusStatus(),
                       'width': '32px',
-                      'evs': App.game.party.getPokemonByName($data.type)?.evs(),
+                      'evs': App.game.party.getPokemonByName($data.item.type)?.evs(),
                       'placement': 'bottom' }}">
             </span>
             <!-- /ko -->
-            <!-- ko if: $data instanceof EvolutionStone -->
+            <!-- ko if: $data.item instanceof EvolutionStone -->
             <span style="position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%);"
                   data-bind="template: { name: 'pokerusStatusTemplate', data: {
                       'pokerus': ItemList[$data.name].getPokerusStatus(),
@@ -57700,9 +57712,9 @@ selectAllClick - (Optional) Function called when the Select All button is clicke
                       'placement': 'bottom' }}">
             </span>
             <!-- /ko -->
-            <!-- ko if: $data instanceof CaughtIndicatingItem -->
+            <!-- ko if: $data.item instanceof CaughtIndicatingItem -->
             <span style="position: absolute; top: 0px; left: 0px;"
-                  data-bind="template: { name: 'caughtStatusTemplate', data: {'status': $data.getCaughtStatus()}}">
+                  data-bind="template: { name: 'caughtStatusTemplate', data: {'status': $data.item.getCaughtStatus()}}">
             </span>
             <!-- /ko -->
         </div>
